@@ -6,10 +6,14 @@
     "dev": "next dev",
     "dev:clean": "rm -rf .next && npm run dev",
     "dev:fresh": "pkill -f 'next dev' || true && pkill -f 'node.*next' || true && sleep 2 && rm -rf .next && npm run dev",
-    "dev:safe": "lsof -ti:3000 | xargs kill -9 2>/dev/null || true; pkill -f 'next dev' 2>/dev/null || true; sleep 2; rm -rf .next; npm run dev",
+    "dev:safe": "bash scripts/dev-safe.sh",
+    "dev:reset": "lsof -ti:3000 | xargs kill -9 2>/dev/null || true; pkill -f 'next dev' 2>/dev/null || true; sleep 2; rm -rf .next node_modules/.cache; npm run dev",
     "build": "next build",
+    "build:check": "bash scripts/validate-build.sh",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format:check": "bash scripts/check-formatting.sh",
+    "pre-commit": "npm run format:check && npm run build:check"
   },
   "dependencies": {
     "@react-pdf/renderer": "^4.3.1",

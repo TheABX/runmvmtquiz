@@ -2,12 +2,53 @@
 
 import { useState, useMemo, useEffect, useRef } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { loadStripe } from '@stripe/stripe-js'
 import { QUIZ_QUESTIONS } from '@/src/lib/runmvmtQuizConfig'
 import { generateInsights } from '@/src/lib/runmvmtInsights'
 import { classifyPersona } from '@/src/lib/runmvmtPersonas'
 import { generateTrainingPlan } from '@/src/lib/runmvmtPlanGenerator'
 import type { QuizQuestion, QuizAnswers, AnswerValue, TrainingPlan, WeeklyPlan } from '@/src/lib/runmvmtTypes'
+
+// Sample reviews data
+const reviews = [
+  {
+    name: 'Sarah M.',
+    distance: 'Marathon Runner',
+    rating: 5,
+    text: 'This training plan completely transformed my running. I went from struggling with 5K to completing my first marathon in 4 months. The personalized approach made all the difference!',
+  },
+  {
+    name: 'James T.',
+    distance: 'Half Marathon',
+    rating: 5,
+    text: 'Best investment I\'ve made in my running journey. The plan adapted to my busy schedule and helped me shave 15 minutes off my half marathon time. Highly recommend!',
+  },
+  {
+    name: 'Emma L.',
+    distance: 'Ultra Runner',
+    rating: 5,
+    text: 'As someone training for my first 50K, I needed a plan that understood ultra running. RUN MVMT delivered exactly that. The injury prevention focus kept me healthy throughout training.',
+  },
+  {
+    name: 'Michael R.',
+    distance: '10K Runner',
+    rating: 5,
+    text: 'I was skeptical at first, but the science-backed approach and personalized recommendations exceeded my expectations. Finally broke my 10K PR after years of plateauing.',
+  },
+  {
+    name: 'Lisa K.',
+    distance: '5K Runner',
+    rating: 5,
+    text: 'Perfect for beginners! The plan was easy to follow and built my confidence gradually. I went from couch to 5K in 8 weeks and now I\'m hooked on running.',
+  },
+  {
+    name: 'David P.',
+    distance: 'Marathon Runner',
+    rating: 5,
+    text: 'The strength training integration was a game-changer. I\'ve never felt stronger or more injury-resistant. Qualified for Boston thanks to this program!',
+  },
+]
 
 const stripePromise =
   typeof window !== 'undefined' && process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
@@ -45,6 +86,8 @@ export default function RunMvmtQuizPage() {
   const [isSubmittingEmail, setIsSubmittingEmail] = useState(false)
   const [checkoutError, setCheckoutError] = useState<string | null>(null)
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null)
+  const [showReviewsModal, setShowReviewsModal] = useState(false)
+  const [currentReviewIndex, setCurrentReviewIndex] = useState(0)
 
   // If coming back from magic-link with ?screen=final, restore quiz data and jump to final screen
   useEffect(() => {
@@ -389,8 +432,8 @@ export default function RunMvmtQuizPage() {
     const mountCheckout = async () => {
       try {
         // Wait for Stripe to load
-        const stripe = await stripePromise
-        if (!stripe) {
+      const stripe = await stripePromise
+      if (!stripe) {
           setCheckoutError('Failed to load Stripe. Please refresh the page.')
           return
         }
@@ -471,7 +514,7 @@ export default function RunMvmtQuizPage() {
         // Redirect is handled automatically by Stripe via return_url after payment
         // The return_url in /api/create-checkout-session will redirect to:
         // /dashboard/performance-setup?checkout=success
-      } catch (error) {
+    } catch (error) {
         console.error('❌ Error initializing checkout:', error)
         if (error instanceof Error) {
           if (error.message.includes('multiple Embedded Checkout')) {
@@ -641,7 +684,7 @@ export default function RunMvmtQuizPage() {
               </div>
               <nav className="hidden md:flex items-center gap-6">
                 <a href="#" className="text-text-secondary hover:text-text-primary text-sm font-medium transition-colors">ABOUT</a>
-                <a href="#" className="text-text-secondary hover:text-text-primary text-sm font-medium transition-colors">PRICING</a>
+                <Link href="/pricing" className="text-text-secondary hover:text-text-primary text-sm font-medium transition-colors">PRICING</Link>
                 <a href="#" className="text-text-secondary hover:text-text-primary text-sm font-medium transition-colors">WHY RUN MVMT?</a>
               </nav>
               <div className="hidden md:flex items-center gap-4">
@@ -661,12 +704,12 @@ export default function RunMvmtQuizPage() {
                   </div>
                 ) : (
                   <>
-                    <button className="px-4 py-2 text-sm font-medium text-text-primary border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                      LOG IN
-                    </button>
-                    <button className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 rounded-lg hover:opacity-90 transition-all">
-                      SIGN UP FOR FREE
-                    </button>
+                <button className="px-4 py-2 text-sm font-medium text-text-primary border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                  LOG IN
+                </button>
+                <button className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 rounded-lg hover:opacity-90 transition-all">
+                  SIGN UP FOR FREE
+                </button>
                   </>
                 )}
               </div>
@@ -711,6 +754,28 @@ export default function RunMvmtQuizPage() {
                     <p className="text-sm text-text-secondary">
                       Free • No credit card required • Takes less than 2 minutes
                     </p>
+                  </div>
+
+                  {/* Social Proof */}
+                  <div className="pt-4">
+                    <button
+                      onClick={() => {
+                        setShowReviewsModal(true)
+                        setCurrentReviewIndex(0)
+                      }}
+                      className="flex items-center justify-center sm:justify-start gap-2 cursor-pointer hover:opacity-80 transition-opacity group w-full sm:w-auto"
+                    >
+                      <div className="flex -space-x-2">
+                        {/* Avatar icon bubbles */}
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 border-2 border-white group-hover:scale-110 transition-transform"></div>
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 border-2 border-white group-hover:scale-110 transition-transform"></div>
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-500 to-blue-500 border-2 border-white group-hover:scale-110 transition-transform"></div>
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-400 border-2 border-white group-hover:scale-110 transition-transform"></div>
+                      </div>
+                      <p className="text-sm font-medium text-text-primary group-hover:text-primary transition-colors">
+                        Over <span className="font-bold text-primary">10,000 runners</span> trained
+                      </p>
+                    </button>
                   </div>
 
                   {/* Credibility Row - Compact */}
@@ -1149,7 +1214,7 @@ export default function RunMvmtQuizPage() {
                             value={(getCurrentAnswer() as string) || ''}
                             onChange={(e) => handleTextInput(e.target.value)}
                             placeholder={currentQuestion.placeholder || 'Type your answer...'}
-                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-black focus:outline-none text-text-primary resize-none"
+                            className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none text-text-primary resize-none"
                             rows={3}
                           />
                           <button
@@ -1175,7 +1240,7 @@ export default function RunMvmtQuizPage() {
                             value={(getCurrentAnswer() as number) || ''}
                             onChange={(e) => handleTextInput(e.target.value)}
                             placeholder={currentQuestion.placeholder || 'Enter a number...'}
-                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-black focus:outline-none text-text-primary"
+                            className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none text-text-primary"
                           />
                           <button
                         onClick={() => {
@@ -1199,7 +1264,7 @@ export default function RunMvmtQuizPage() {
                             type="date"
                             value={(getCurrentAnswer() as string) || ''}
                             onChange={(e) => handleTextInput(e.target.value)}
-                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-black focus:outline-none text-text-primary"
+                            className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none text-text-primary"
                           />
                           <button
                         onClick={() => {
@@ -1358,7 +1423,7 @@ export default function RunMvmtQuizPage() {
                         required
                         value={userFirstName}
                         onChange={(e) => setUserFirstName(e.target.value)}
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none text-text-primary"
+                        className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none text-text-primary"
                         placeholder="John"
                       />
                     </div>
@@ -1373,7 +1438,7 @@ export default function RunMvmtQuizPage() {
                         required
                         value={userEmail}
                         onChange={(e) => setUserEmail(e.target.value)}
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none text-text-primary"
+                        className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none text-text-primary"
                         placeholder="john@example.com"
                       />
                     </div>
@@ -1833,7 +1898,7 @@ export default function RunMvmtQuizPage() {
 
                       {/* Stripe Checkout Section */}
                       {showCheckout ? (
-                        <div>
+                          <div>
                           <div className="mb-4">
                             <button
                               onClick={() => {
@@ -1870,8 +1935,8 @@ export default function RunMvmtQuizPage() {
                                     <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-2"></div>
                                     <p className="text-sm text-text-secondary">Loading payment form...</p>
                                     <p className="text-xs text-text-secondary mt-2">This may take a few seconds...</p>
-                                  </div>
-                                </div>
+                          </div>
+                          </div>
                               )}
                               {checkoutError && (
                                 <div className="absolute inset-0 flex items-center justify-center bg-gray-50 rounded-lg">
@@ -1896,10 +1961,10 @@ export default function RunMvmtQuizPage() {
                                     >
                                       Try Again
                                     </button>
-                                  </div>
-                                </div>
+                        </div>
+                      </div>
                               )}
-                            </div>
+                        </div>
                           ) : (
                             <div className="min-h-[600px] w-full flex items-center justify-center">
                               <p className="text-text-secondary">Loading checkout...</p>
@@ -1910,8 +1975,8 @@ export default function RunMvmtQuizPage() {
                         <div>
                           <div className="flex items-center gap-3 mb-4">
                             <svg className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                            </svg>
+                            <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                          </svg>
                             <p className="text-sm font-semibold text-text-primary">
                               Secure checkout powered by Stripe
                             </p>
@@ -1923,38 +1988,38 @@ export default function RunMvmtQuizPage() {
                               <svg className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                               </svg>
-                              <div>
+                          <div>
                                 <p className="text-sm font-semibold text-blue-900 mb-1">
                                   Secure Payment Processing
                                 </p>
                                 <p className="text-xs text-blue-800">
                                   Enter your payment details securely below. Your card information is encrypted and never stored on our servers. Stripe supports all major cards, Google Pay, Apple Pay, and more.
                                 </p>
-                              </div>
                             </div>
                           </div>
+                        </div>
 
-                          {/* Guarantee Message */}
+                        {/* Guarantee Message */}
                           <div className="mb-6 p-4 bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-pink-500/10 rounded-lg border border-gray-200">
-                            <p className="text-sm font-semibold text-text-primary text-center">
-                              Try it for 6 weeks — if you don't feel fitter, faster or more confident, I'll refund you.
-                            </p>
-                          </div>
+                          <p className="text-sm font-semibold text-text-primary text-center">
+                            Try it for 6 weeks — if you don't feel fitter, faster or more confident, I'll refund you.
+                          </p>
+                        </div>
 
-                          <button
-                            onClick={handleCheckout}
-                            disabled={isProcessingPayment}
+                        <button
+                          onClick={handleCheckout}
+                          disabled={isProcessingPayment}
                             className={`w-full px-6 py-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 text-white font-bold text-lg rounded-lg shadow-lg transition-all duration-200 ${
                               isProcessingPayment ? 'opacity-70 cursor-not-allowed' : 'hover:opacity-90 hover:shadow-xl'
-                            }`}
-                          >
+                          }`}
+                        >
                             {isProcessingPayment ? 'Loading checkout...' : 'Complete Purchase - $99'}
-                          </button>
+                        </button>
 
                           <p className="text-xs text-text-secondary mt-4 text-center">
                             By proceeding, you agree to allow RUN MVMT to charge your card for this one-time payment in accordance with our terms.
                           </p>
-                        </div>
+                      </div>
                       )}
                     </div>
 
@@ -2659,6 +2724,110 @@ export default function RunMvmtQuizPage() {
           )}
         </div>
       </main>
+
+      {/* Reviews Modal */}
+      {showReviewsModal && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          onClick={() => setShowReviewsModal(false)}
+        >
+          <div 
+            className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <div>
+                <h3 className="text-2xl font-bold text-text-primary">Runner Reviews</h3>
+                <p className="text-sm text-text-secondary mt-1">Over 10,000 runners trained</p>
+              </div>
+              <button
+                onClick={() => setShowReviewsModal(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Review Content - Slider */}
+            <div className="flex-1 overflow-hidden relative">
+              <div 
+                className="flex transition-transform duration-300 ease-in-out"
+                style={{ transform: `translateX(-${currentReviewIndex * 100}%)` }}
+              >
+                {reviews.map((review, index) => (
+                  <div 
+                    key={index}
+                    className="min-w-full px-6 py-8 flex flex-col"
+                  >
+                    <div className="flex items-center gap-1 mb-4">
+                      {[...Array(review.rating)].map((_, i) => (
+                        <svg key={i} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      ))}
+                    </div>
+                    <p className="text-lg text-text-primary mb-6 leading-relaxed flex-1">
+                      "{review.text}"
+                    </p>
+                    <div className="flex items-center gap-3 pt-4 border-t border-gray-200">
+                      <div className="w-12 h-12 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                        {review.name.charAt(0)}
+                      </div>
+                      <div>
+                        <p className="text-base font-semibold text-text-primary">{review.name}</p>
+                        <p className="text-sm text-text-secondary">{review.distance}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Navigation */}
+            <div className="p-6 border-t border-gray-200 bg-gray-50">
+              {/* Dots Indicator */}
+              <div className="flex items-center justify-center gap-2 mb-4">
+                {reviews.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentReviewIndex(index)}
+                    className={`w-2 h-2 rounded-full transition-all ${
+                      index === currentReviewIndex 
+                        ? 'bg-primary w-8' 
+                        : 'bg-gray-300 hover:bg-gray-400'
+                    }`}
+                    aria-label={`Go to review ${index + 1}`}
+                  />
+                ))}
+              </div>
+
+              {/* Navigation Buttons */}
+              <div className="flex items-center justify-between">
+                <button
+                  onClick={() => setCurrentReviewIndex((prev) => (prev === 0 ? reviews.length - 1 : prev - 1))}
+                  className="px-4 py-2 text-sm font-medium text-text-primary border border-gray-300 rounded-lg hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={reviews.length === 0}
+                >
+                  ← Previous
+                </button>
+                <span className="text-sm text-text-secondary">
+                  {currentReviewIndex + 1} of {reviews.length}
+                </span>
+                <button
+                  onClick={() => setCurrentReviewIndex((prev) => (prev === reviews.length - 1 ? 0 : prev + 1))}
+                  className="px-4 py-2 text-sm font-medium text-text-primary border border-gray-300 rounded-lg hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={reviews.length === 0}
+                >
+                  Next →
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
