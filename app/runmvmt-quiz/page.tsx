@@ -683,7 +683,7 @@ export default function RunMvmtQuizPage() {
                 </div>
               </div>
               <nav className="hidden md:flex items-center gap-6">
-                <a href="#" className="text-text-secondary hover:text-text-primary text-sm font-medium transition-colors">ABOUT</a>
+                <Link href="/about" className="text-text-secondary hover:text-text-primary text-sm font-medium transition-colors">ABOUT</Link>
                 <Link href="/pricing" className="text-text-secondary hover:text-text-primary text-sm font-medium transition-colors">PRICING</Link>
                 <a href="#" className="text-text-secondary hover:text-text-primary text-sm font-medium transition-colors">WHY RUN MVMT?</a>
               </nav>
