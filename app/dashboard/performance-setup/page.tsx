@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
+import { trackPurchase } from '@/src/lib/facebookPixel'
 
 export default function PerformanceSetupPage() {
   const router = useRouter()
@@ -23,6 +24,9 @@ export default function PerformanceSetupPage() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search)
     if (urlParams.get('checkout') === 'success') {
+      // Track purchase conversion
+      trackPurchase(99.00, 'AUD') // $99 AUD based on your Stripe config
+      
       // Clean up URL
       window.history.replaceState({}, '', '/dashboard/performance-setup')
     }

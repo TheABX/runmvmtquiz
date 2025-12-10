@@ -9,6 +9,13 @@ import { generateInsights } from '@/src/lib/runmvmtInsights'
 import { classifyPersona } from '@/src/lib/runmvmtPersonas'
 import { generateTrainingPlan } from '@/src/lib/runmvmtPlanGenerator'
 import type { QuizQuestion, QuizAnswers, AnswerValue, TrainingPlan, WeeklyPlan } from '@/src/lib/runmvmtTypes'
+import { 
+  trackLead, 
+  trackCompleteRegistration, 
+  trackAddToCart, 
+  trackInitiateCheckout, 
+  trackViewContent 
+} from '@/src/lib/facebookPixel'
 
 // Sample reviews data
 const reviews = [
@@ -154,6 +161,16 @@ export default function RunMvmtQuizPage() {
     }
   }, [])
 
+  // Track quiz completion and ViewContent when screen changes
+  useEffect(() => {
+    if (screen === 'final' || screen === 'creating') {
+      // Track lead when quiz is completed
+      trackLead('RunMVMT Quiz Completion')
+      // Track ViewContent for quiz completion
+      trackViewContent('RunMVMT Quiz Results', 'quiz')
+    }
+  }, [screen])
+
   // Filter questions based on conditional logic
   const getVisibleQuestions = (): QuizQuestion[] => {
     const visible: QuizQuestion[] = []
@@ -241,12 +258,16 @@ export default function RunMvmtQuizPage() {
   }
 
   const handleStart = () => {
+    trackViewContent('RunMVMT Quiz Start', 'quiz')
     setScreen('question')
     setCurrentQuestionIndex(0)
   }
 
   const handleCheckout = async () => {
     try {
+      // Track AddToCart when user clicks checkout button
+      trackAddToCart(99.00, 'AUD')
+      
       // Verify Stripe is available
       if (!stripePromise) {
         alert('Payment system is not ready yet. Please check your configuration.')
@@ -296,6 +317,10 @@ export default function RunMvmtQuizPage() {
       console.log('Setting client secret and showing checkout...')
       setCheckoutClientSecret(data.clientSecret)
       setShowCheckout(true)
+      
+      // Track InitiateCheckout when Stripe form is shown
+      trackInitiateCheckout(99.00, 'AUD')
+      
       setIsProcessingPayment(false)
     } catch (error: any) {
       console.error('Error starting checkout:', error)
@@ -368,6 +393,10 @@ export default function RunMvmtQuizPage() {
           throw new Error(error.message || 'Failed to send email. Please try again.')
         }
       }
+
+      // Track registration/lead when magic link is sent successfully
+      trackCompleteRegistration()
+      trackLead('RunMVMT Account Signup')
 
       console.log('Magic link sent successfully:', data)
 

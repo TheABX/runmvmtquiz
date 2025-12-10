@@ -1,12 +1,22 @@
 import type { QuizAnswers, RunnerPersona, WeeklyPlan, Session, TrainingPlan } from './runmvmtTypes';
+import type { AbilityTier } from './config/abilityTiers';
+import { classifyAbilityTier } from './config/abilityTiers';
+import { getVolumeConfig, buildBaseVolumeCurve } from './config/volumeCurves';
+import type { Distance as VolumeDistance, GoalIntent as VolumeGoalIntent } from './config/volumeCurves';
+import { applyModifiers } from './config/modifiers';
+import { getPhaseForWeek, getPhaseDescription } from './config/phaseProgression';
+import { LONG_RUN_TEMPLATES, getQualitySessionTemplate, getSecondaryQualitySession } from './config/sessionTemplates';
+import type { TrainingPhase } from './config/phaseProgression';
 
 // ============================================================================
 // TYPES & CONFIGURATION
 // ============================================================================
 
-export type AbilityTier = "beginner" | "intermediate" | "advanced" | "competitive" | "elite";
 export type Distance = "5k" | "10k" | "half_marathon" | "marathon" | "50k" | "80k" | "100k_plus";
 export type GoalIntent = "complete" | "comfortable" | "pb" | "race" | "unsure";
+
+// Re-export AbilityTier for backward compatibility
+export type { AbilityTier } from './config/abilityTiers';
 
 interface VolumeBand {
   startMin: number;
@@ -299,21 +309,9 @@ function estimateCurrentKmFromBucket(bucket: string): number {
   }
 }
 
-function mapToAbilityTier(persona: RunnerPersona, currentKmEstimate: number): AbilityTier {
-  // Injury persona caps at advanced unless truly elite base
-  if (persona.id === "returning_from_injury") {
-    if (currentKmEstimate >= 110) return "competitive";
-    if (currentKmEstimate >= 80) return "advanced";
-    if (currentKmEstimate >= 50) return "intermediate";
-    return "beginner";
-  }
-
-  // Primary mapping based on current km
-  if (currentKmEstimate < 25) return "beginner";
-  if (currentKmEstimate < 50) return "intermediate";
-  if (currentKmEstimate < 80) return "advanced";
-  if (currentKmEstimate < 110) return "competitive";
-  return "elite";
+// Use new ability tier classification from config
+function mapToAbilityTier(answers: QuizAnswers, persona: RunnerPersona): AbilityTier {
+  return classifyAbilityTier(answers, persona.id);
 }
 
 function mapGoalTypeToIntent(goalType: string): GoalIntent {
@@ -397,86 +395,29 @@ export function buildWeeklyVolumeCurve(
   intent: GoalIntent,
   persona: RunnerPersona,
   currentKmBucket: string,
+  answers: QuizAnswers,
   injuryStatus?: string
 ): number[] {
-  const { startKm, peakKm, abilityTier } = chooseStartAndPeak(distance, intent, persona, currentKmBucket);
+  // Use new config system
+  const abilityTier = classifyAbilityTier(answers, persona.id);
+  const volumeConfig = getVolumeConfig(
+    distance as VolumeDistance,
+    intent as VolumeGoalIntent,
+    abilityTier,
+    currentKmBucket,
+    persona.id
+  );
   
-  // Adjust peak for current injury
-  let adjustedPeakKm = peakKm;
-  if (injuryStatus === "current") {
-    adjustedPeakKm = peakKm * 0.80;
-  }
-
+  // Apply modifiers
+  const { adjustedVolume: adjustedStartKm } = applyModifiers(volumeConfig.startKm, answers);
+  const { adjustedVolume: adjustedPeakKm } = applyModifiers(volumeConfig.peakKm, answers);
+  
   const volumes: number[] = [];
-  const maxIncreasePercent = (persona.id === "returning_from_injury" || persona.id === "beginner_low_mileage") ? 0.10 : 0.15;
-  const isRecurringInjury = injuryStatus === "recurring";
-
-  let currentKm = startKm;
 
   for (let week = 1; week <= 12; week++) {
-    // WEEKS 1-3: Base / adaptation
-    if (week <= 3) {
-      const target = startKm + ((adjustedPeakKm - startKm) * 0.15 * week);
-      const maxIncrease = currentKm * maxIncreasePercent;
-      const step = Math.min(target - currentKm, maxIncrease);
-      currentKm = Math.max(currentKm, currentKm + step);
-    }
-    // WEEKS 4-7: Build towards peak with down-week
-    else if (week <= 7) {
-      if (week === 5 || (isRecurringInjury && week % 3 === 0)) {
-        // Down week
-        currentKm = currentKm * 0.85;
-      } else {
-        const target = startKm + ((adjustedPeakKm - startKm) * (0.3 + (week - 4) * 0.15));
-        const maxIncrease = currentKm * maxIncreasePercent;
-        const step = Math.min(target - currentKm, maxIncrease);
-        currentKm = Math.max(currentKm, currentKm + step);
-      }
-    }
-    // WEEKS 8-10: Hold near peak
-    else if (week <= 10) {
-      if (week === 8) {
-        currentKm = adjustedPeakKm * 0.95;
-      } else if (week === 9) {
-        currentKm = adjustedPeakKm;
-      } else {
-        // Week 10
-        if (distance === "50k" || distance === "80k" || distance === "100k_plus") {
-          // Ultra: allow one big week up to 1.1x peak if safe
-          currentKm = Math.min(adjustedPeakKm * 1.10, currentKm * 1.15);
-        } else {
-          currentKm = adjustedPeakKm * 0.90;
-        }
-      }
-    }
-    // WEEKS 11-12: Taper
-    else {
-      const goalType = intent;
-      if (goalType === "unsure") {
-        // Light reduction only
-        if (week === 11) {
-          currentKm = adjustedPeakKm * 0.85;
-        } else {
-          currentKm = adjustedPeakKm * 0.75;
-        }
-      } else {
-        // Race taper
-        if (week === 11) {
-          currentKm = adjustedPeakKm * 0.725; // 0.7-0.75
-        } else {
-          // Week 12
-          if (distance === "5k" || distance === "10k") {
-            currentKm = adjustedPeakKm * 0.50; // 0.45-0.55
-          } else {
-            currentKm = adjustedPeakKm * 0.55; // 0.5-0.6 for marathon/ultra
-          }
-        }
-      }
-    }
-
-    // Safety clamp
-    currentKm = Math.max(0, Math.round(currentKm));
-    volumes.push(currentKm);
+    const phase = getPhaseForWeek(week, answers["goal_type"] as string) as TrainingPhase;
+    const weekKm = buildBaseVolumeCurve(adjustedStartKm, adjustedPeakKm, week, phase, injuryStatus);
+    volumes.push(weekKm);
   }
 
   return volumes;
@@ -505,53 +446,60 @@ function prescribeLongRunKm(
 
   let longRunKm = weeklyKm * longRunPercent;
 
-  // Distance-specific ranges
+  // Distance-specific ranges - map new ability tiers to ranges
   const ranges: Record<Distance, Record<AbilityTier, [number, number]>> = {
     "5k": {
       beginner: [8, 10],
-      intermediate: [10, 12],
+      lower_intermediate: [10, 12],
+      upper_intermediate: [12, 14],
       advanced: [12, 16],
       competitive: [12, 16],
       elite: [18, 20],
     },
     "10k": {
       beginner: [12, 14],
-      intermediate: [14, 18],
+      lower_intermediate: [14, 18],
+      upper_intermediate: [16, 20],
       advanced: [16, 22],
       competitive: [16, 22],
       elite: [22, 26],
     },
     "half_marathon": {
       beginner: [16, 18],
-      intermediate: [18, 21],
+      lower_intermediate: [18, 21],
+      upper_intermediate: [20, 23],
       advanced: [21, 24],
       competitive: [22, 26],
       elite: [22, 26],
     },
     "marathon": {
       beginner: [28, 32],
-      intermediate: [30, 34],
+      lower_intermediate: [30, 34],
+      upper_intermediate: [32, 35],
       advanced: [32, 36],
       competitive: [34, 38],
       elite: [34, 38],
     },
     "50k": {
       beginner: [24, 32],
-      intermediate: [28, 36],
+      lower_intermediate: [28, 36],
+      upper_intermediate: [32, 38],
       advanced: [32, 40],
       competitive: [36, 44],
       elite: [36, 44],
     },
     "80k": {
       beginner: [32, 40],
-      intermediate: [36, 45],
+      lower_intermediate: [36, 45],
+      upper_intermediate: [40, 48],
       advanced: [40, 52],
       competitive: [45, 55],
       elite: [45, 55],
     },
     "100k_plus": {
       beginner: [36, 45],
-      intermediate: [40, 52],
+      lower_intermediate: [40, 52],
+      upper_intermediate: [45, 56],
       advanced: [45, 60],
       competitive: [50, 60],
       elite: [50, 60],
@@ -586,6 +534,179 @@ function prescribeLongRunKm(
   longRunKm = Math.min(longRunKm, weeklyKm * 0.60);
 
   return Math.round(longRunKm);
+}
+
+// ============================================================================
+// HELPER FUNCTIONS FOR ENHANCED SESSION DESCRIPTIONS
+// ============================================================================
+
+function getRecoveryGuidance(lifestyle: string, recoveryFeel: string): string {
+  if (lifestyle === "parent_low_sleep" || recoveryFeel === "burnt_out") {
+    return "Prioritise sleep and gentle movement. If you're tired, shorten or skip this session.";
+  }
+  if (lifestyle === "heavy_labour" || lifestyle === "active_job") {
+    return "You're already on your feet a lot — listen to your body and don't push through fatigue.";
+  }
+  if (recoveryFeel === "sore") {
+    return "Take extra time to warm up and cool down. If soreness persists, reduce intensity.";
+  }
+  if (lifestyle === "desk") {
+    return "Since you sit most of the day, this run helps counteract stiffness. Focus on good posture.";
+  }
+  return "";
+}
+
+function getSurfaceGuidance(surface: string, courseProfile: string): string {
+  if (surface === "trail" || surface === "mixed") {
+    if (courseProfile === "mountain") {
+      return "Include hills and technical terrain. Focus on time on feet rather than pace.";
+    }
+    if (courseProfile === "rolling") {
+      return "Mix of flat and hilly sections. Practice varying effort on climbs and descents.";
+    }
+    return "Trail running builds strength naturally. Focus on smooth, efficient movement.";
+  }
+  if (surface === "treadmill") {
+    return "Consider adding 1-2% incline to simulate outdoor conditions. Focus on consistent effort.";
+  }
+  if (courseProfile === "mountain" && surface === "road") {
+    return "If your race is hilly but you train on roads, add hill repeats or treadmill incline work.";
+  }
+  return "";
+}
+
+function getStrengthNote(strengthTraining: string): string {
+  if (strengthTraining === "yes_consistent") {
+    return "Continue your strength work. Schedule it on easy run days or after quality sessions.";
+  }
+  if (strengthTraining === "yes_inconsistent") {
+    return "Try to maintain 1-2 strength sessions per week. Focus on runner-specific movements.";
+  }
+  if (strengthTraining === "no_but_open") {
+    return "Consider adding 1-2 short strength sessions per week. Start with bodyweight exercises.";
+  }
+  return "";
+}
+
+function generateLongRunDescription(
+  distance: Distance,
+  weekNumber: number,
+  longRunKm: number,
+  surface: string,
+  courseProfile: string,
+  lifestyle: string,
+  recoveryFeel: string
+): string {
+  const surfaceGuidance = getSurfaceGuidance(surface, courseProfile);
+  const recoveryGuidance = getRecoveryGuidance(lifestyle, recoveryFeel);
+  
+  let baseDesc = "";
+  
+  if (distance === "marathon" && weekNumber >= 7 && weekNumber <= 10) {
+    baseDesc = `Long run with marathon-pace blocks. Start with 15-20 min easy warm-up, then include 2-3 blocks of 10-15 min at marathon pace with 5 min easy recovery between. Finish with easy cooldown. This builds race-specific fitness and pacing confidence.`;
+  } else if (distance === "5k" || distance === "10k") {
+    baseDesc = `Long run at easy, conversational pace (RPE 3-4/10). You should be able to speak in full sentences. Focus on relaxed form, steady breathing, and time on feet. This builds aerobic base without adding stress.`;
+  } else if (distance === "half_marathon") {
+    if (weekNumber >= 8 && weekNumber <= 10) {
+      baseDesc = `Long run with optional half-marathon pace segments. After 20 min easy, include 2-3 x 10 min at half-marathon effort with 3 min easy recovery. Finish easy. This sharpens race-specific fitness.`;
+    } else {
+      baseDesc = `Long run at easy effort (RPE 3-4/10). Focus on building endurance and aerobic capacity. Keep it conversational — you should finish feeling like you could run more.`;
+    }
+  } else if (distance === "50k" || distance === "80k" || distance === "100k_plus") {
+    baseDesc = `Long run at easy to moderate effort. Focus on time on feet, terrain-specific adaptation, and fuelling practice. Start easy and stay controlled — the goal is duration, not pace. Practice your race-day nutrition strategy.`;
+  } else {
+    baseDesc = `Long run at easy, conversational pace. Build endurance gradually. Focus on relaxed rhythm, steady breathing, and enjoying the process.`;
+  }
+  
+  const parts = [baseDesc];
+  if (surfaceGuidance) parts.push(surfaceGuidance);
+  if (recoveryGuidance) parts.push(recoveryGuidance);
+  
+  return parts.join(" ");
+}
+
+function generateQualitySessionDescription(
+  distance: Distance,
+  weekNumber: number,
+  sessionType: string,
+  surface: string,
+  courseProfile: string,
+  sessionPrefs: string[]
+): string {
+  let desc = "";
+  
+  if (sessionType === "Tempo / Threshold") {
+    if (distance === "5k") {
+      desc = `15-25 min continuous tempo at comfortably hard effort (RPE 6-7/10). You should be able to say 2-3 words at a time. Start conservatively and build into it. This improves your lactate threshold — the pace you can sustain for 20-30 minutes.`;
+    } else if (distance === "10k") {
+      desc = `20-30 min continuous tempo at threshold pace (RPE 6-7/10). This is comfortably hard — not all-out, but definitely not easy. Focus on even effort throughout. This builds the fitness you need for sustained 10k effort.`;
+    }
+    
+    if (courseProfile === "rolling" || courseProfile === "mountain") {
+      desc += " If on hills, adjust effort — maintain RPE rather than pace.";
+    }
+  } else if (sessionType === "Intervals") {
+    if (distance === "5k") {
+      desc = `8 x 400m or 6 x 800m at 5k race pace with full recovery (2-3 min walk/jog). These intervals improve speed and efficiency. Focus on smooth, controlled pace — not all-out sprinting.`;
+    } else if (distance === "10k") {
+      desc = `6 x 1km or 5 x 1.2km at 10k race pace with 90 sec-2 min recovery. These intervals build race-specific fitness. Start slightly conservative and finish strong.`;
+    }
+    
+    if (sessionPrefs && sessionPrefs.includes("hills") && (courseProfile === "rolling" || courseProfile === "mountain")) {
+      desc += " Consider hill intervals instead: 6-8 x 60-90 sec uphill at hard effort with jog-down recovery.";
+    }
+  } else if (sessionType === "Threshold Intervals") {
+    desc = `4-6 x 5 min at threshold pace (comfortably hard, RPE 6-7/10) with 1 min easy recovery. These intervals build sustained power without the stress of continuous tempo. Focus on consistent effort across all intervals.`;
+  } else if (sessionType === "Continuous Tempo") {
+    desc = `20-40 min continuous tempo at half-marathon effort (RPE 6-7/10). This is your race pace — sustainable but challenging. Start conservatively and build into it. This is the key session for half-marathon fitness.`;
+  } else if (sessionType === "Threshold Work") {
+    desc = `Continuous tempo or cruise intervals at threshold pace (RPE 6-7/10). Option 1: 20-30 min continuous. Option 2: 3-4 x 8-10 min with 2 min recovery. This builds the aerobic power you need for marathon pace.`;
+  } else if (sessionType === "Marathon Pace") {
+    if (weekNumber >= 7 && weekNumber <= 9) {
+      desc = `Marathon-pace blocks: 3-4 x 15-20 min at goal marathon pace with 3-4 min easy recovery. This is race-specific training. Practice your race-day pacing and fuelling. Start conservatively — marathon pace should feel controlled.`;
+    } else {
+      desc = `Marathon-pace work: 2-3 x 10-15 min at goal marathon pace with 3-4 min easy recovery. This builds race-specific fitness and pacing confidence. Focus on smooth, controlled effort.`;
+    }
+  } else if (sessionType === "Steady Effort") {
+    desc = `Longer steady aerobic effort (RPE 5-6/10). Keep it controlled and sustainable — you should finish feeling strong. This builds the endurance base crucial for ultra-distance events. Focus on time on feet and consistent effort.`;
+  } else if (sessionType === "Long Steady") {
+    desc = `Extended steady effort at moderate intensity (RPE 5-6/10). This is longer than tempo but harder than easy. Builds aerobic capacity and mental toughness for ultra events. Stay controlled throughout.`;
+  } else if (sessionType === "Strides / Leg Speed") {
+    desc = `4-8 x 20-30 sec fast strides at the end of an easy run. Focus on quick, light turnover and good form. Full recovery between each (walk back to start). This improves running economy and leg speed without adding stress.`;
+  }
+  
+  if (surface === "trail" && (sessionType.includes("Tempo") || sessionType.includes("Intervals"))) {
+    desc += " On trails, focus on effort rather than pace — terrain will vary your pace naturally.";
+  }
+  
+  return desc;
+}
+
+function generateEasyRunDescription(
+  lifestyle: string,
+  recoveryFeel: string,
+  surface: string,
+  weekNumber: number
+): string {
+  let desc = `Easy run at conversational pace (RPE 2-3/10). You should be able to speak in full sentences comfortably. Focus on relaxed form, steady breathing, and recovery.`;
+  
+  if (lifestyle === "desk") {
+    desc += " Since you sit most of the day, this run helps counteract stiffness and improves circulation.";
+  } else if (lifestyle === "parent_low_sleep" || recoveryFeel === "burnt_out") {
+    desc += " If you're tired, it's okay to shorten this or make it a walk-run. Recovery is the priority.";
+  } else if (recoveryFeel === "sore") {
+    desc += " Take extra time to warm up. If soreness increases during the run, stop and rest.";
+  }
+  
+  if (surface === "trail") {
+    desc += " On trails, focus on smooth movement and enjoying the terrain. Pace is less important than time on feet.";
+  }
+  
+  if (weekNumber >= 11) {
+    desc += " During taper, these easy runs maintain fitness while allowing full recovery.";
+  }
+  
+  return desc;
 }
 
 // ============================================================================
@@ -637,19 +758,46 @@ export function buildWeeklyStructure(
     }
   }
 
+  // Extract quiz answers for personalization
+  const lifestyle = (answers["lifestyle"] as string) || "mixed";
+  const recoveryFeel = (answers["recovery_feel"] as string) || "normal";
+  const sessionPrefs = (answers["session_preferences"] as string[]) || [];
+  const surface = (answers["main_surface"] as string) || "road";
+  const courseProfile = (answers["course_profile"] as string) || "flat";
+  const strengthTraining = (answers["strength_training"] as string) || "no_not_interested";
+
   const sessions: Session[] = [];
 
-  // Long run on Sunday
+  // Long run on Sunday - use new template system
+  const phase = getPhaseForWeek(weekNumber, answers["goal_type"] as string) as TrainingPhase;
+  const longRunTemplate = LONG_RUN_TEMPLATES[distance][phase];
+  
+  // Enhance template description with personalization
+  let longRunDesc = longRunTemplate.description;
+  const surfaceGuidance = getSurfaceGuidance(surface, courseProfile);
+  const recoveryGuidance = getRecoveryGuidance(lifestyle, recoveryFeel);
+  
+  if (surfaceGuidance) {
+    longRunDesc += ` ${surfaceGuidance}`;
+  }
+  if (recoveryGuidance) {
+    longRunDesc += ` ${recoveryGuidance}`;
+  }
+  
+  // Adjust intensity based on phase and distance
+  let longRunIntensity = longRunTemplate.intensityHint;
+  if (distance === "marathon" && weekNumber >= 7 && weekNumber <= 10) {
+    longRunIntensity = "Easy–Moderate (with MP blocks)";
+  } else if (distance === "half_marathon" && weekNumber >= 8 && weekNumber <= 10) {
+    longRunIntensity = "Easy–Moderate (with HMP segments)";
+  }
+  
   sessions.push({
     day: "Sun",
     type: "Long Run",
-    description: distance === "marathon" && weekNumber >= 7 && weekNumber <= 10
-      ? `Long run with marathon-pace blocks. Build endurance and race-specific fitness.`
-      : distance === "50k" || distance === "80k" || distance === "100k_plus"
-      ? `Long run at easy effort. Focus on time on feet and terrain-specific adaptation.`
-      : `Long run at easy effort. Focus on relaxed rhythm and time on feet.`,
-    durationKmOrMin: longRunKm,
-    intensityHint: "Easy"
+    description: longRunDesc,
+    durationKmOrMin: longRunKm, // Use calculated long run km, not template default
+    intensityHint: longRunIntensity
   });
 
   // Quality sessions
@@ -660,70 +808,71 @@ export function buildWeeklyStructure(
 
   if (qualitySessionsCount >= 1) {
     const primaryQualityDay = weekNumber % 2 === 0 ? "Tue" : "Wed";
-    let qualityType = "";
-    let qualityDesc = "";
-
-    if (distance === "5k" || distance === "10k") {
-      if (weekNumber < 5) {
-        qualityType = "Tempo / Threshold";
-        qualityDesc = "15-25 min continuous tempo at comfortably hard pace.";
-      } else {
-        qualityType = "Intervals";
-        qualityDesc = distance === "5k" 
-          ? "8 x 400m or 6 x 800m at 5k pace with full recovery."
-          : "6 x 1km or 5 x 1.2km at 10k pace with full recovery.";
+    const phase = getPhaseForWeek(weekNumber, answers["goal_type"] as string) as TrainingPhase;
+    
+    // Use new session template system
+    const qualityTemplate = getQualitySessionTemplate(distance, phase, weekNumber, abilityTier);
+    
+    // Check if user prefers hills and course is hilly - override if applicable
+    const prefersHills = sessionPrefs.includes("hills");
+    const isHillyCourse = courseProfile === "rolling" || courseProfile === "mountain";
+    
+    let qualityType = qualityTemplate.type;
+    let qualityDesc = qualityTemplate.description;
+    
+    // Override for hill preferences on hilly courses
+    if (prefersHills && isHillyCourse && weekNumber >= 6 && (distance === "5k" || distance === "10k" || distance === "half_marathon")) {
+      if (qualityType === "Intervals") {
+        qualityType = "Hill Intervals";
+        qualityDesc = `6-8 x 60-90 sec uphill at hard effort (RPE 7-8/10) with jog-down recovery. These build power and strength for hilly courses. Focus on strong, controlled effort up the hill.`;
       }
-    } else if (distance === "half_marathon") {
-      if (weekNumber < 5) {
-        qualityType = "Threshold Intervals";
-        qualityDesc = "4-6 x 5 min at threshold pace with 1 min recovery.";
-      } else {
-        qualityType = "Continuous Tempo";
-        qualityDesc = "20-40 min continuous tempo at half marathon effort.";
-      }
-    } else if (distance === "marathon") {
-      if (weekNumber < 5) {
-        qualityType = "Threshold Work";
-        qualityDesc = "Continuous tempo or cruise intervals at threshold pace.";
-      } else {
-        qualityType = "Marathon Pace";
-        qualityDesc = "Marathon-pace blocks or steady-state intervals targeting race effort.";
-      }
-    } else {
-      // Ultras
-      qualityType = "Steady Effort";
-      qualityDesc = "Longer steady aerobic effort. Keep it controlled and sustainable.";
+    }
+    
+    // Add surface-specific guidance
+    if (surface === "trail" && (qualityType.includes("Tempo") || qualityType.includes("Intervals"))) {
+      qualityDesc += " On trails, focus on effort rather than pace — terrain will vary your pace naturally.";
+    }
+    
+    // Adjust intensity hint based on recovery and lifestyle
+    let intensityHint = qualityTemplate.intensityHint;
+    if (recoveryFeel === "sore" || recoveryFeel === "burnt_out" || lifestyle === "parent_low_sleep") {
+      intensityHint = "Moderate (listen to your body)";
     }
 
     sessions.push({
       day: primaryQualityDay,
       type: qualityType,
       description: qualityDesc,
-      durationKmOrMin: 8,
-      intensityHint: "Moderate–Hard"
+      durationKmOrMin: qualityTemplate.durationKmOrMin,
+      intensityHint: intensityHint
     });
 
     if (qualitySessionsCount === 2) {
       const secondaryDay = primaryQualityDay === "Tue" ? "Thu" : "Sat";
-      if (distance === "50k" || distance === "80k" || distance === "100k_plus") {
-        sessions.push({
-          day: secondaryDay,
-          type: "Long Steady",
-          description: "Extended steady effort. Focus on aerobic efficiency.",
-          durationKmOrMin: 10,
-          intensityHint: "Moderate"
-        });
-      } else {
-        sessions.push({
-          day: secondaryDay,
-          type: weekNumber < 5 ? "Strides / Leg Speed" : "Intervals",
-          description: weekNumber < 5
-            ? "4-8 x 20s fast strides at end of easy run."
-            : "Shorter intervals or hill reps for leg speed.",
-          durationKmOrMin: 6,
-          intensityHint: "Moderate"
-        });
+      const phase = getPhaseForWeek(weekNumber, answers["goal_type"] as string) as TrainingPhase;
+      
+      // Use new session template system for secondary quality session
+      const secondaryTemplate = getSecondaryQualitySession(distance, phase, weekNumber);
+      
+      let secondaryType = secondaryTemplate.type;
+      let secondaryDesc = secondaryTemplate.description;
+      
+      // Override for hill preferences
+      const prefersHills = sessionPrefs.includes("hills");
+      const isHillyCourse = courseProfile === "rolling" || courseProfile === "mountain";
+      
+      if (prefersHills && isHillyCourse && secondaryType === "Intervals / Hills") {
+        secondaryType = "Hill Reps";
+        secondaryDesc = `6-8 x 60-90 sec uphill at hard effort (RPE 7-8/10) with jog-down recovery. Builds power and strength. Focus on strong, controlled effort.`;
       }
+      
+      sessions.push({
+        day: secondaryDay,
+        type: secondaryType,
+        description: secondaryDesc,
+        durationKmOrMin: secondaryTemplate.durationKmOrMin,
+        intensityHint: secondaryTemplate.intensityHint
+      });
     }
   }
 
@@ -733,26 +882,29 @@ export function buildWeeklyStructure(
   );
 
   for (let i = 0; i < easyRunDays && i < easyDaysOrder.length; i++) {
+    const easyDesc = generateEasyRunDescription(lifestyle, recoveryFeel, surface, weekNumber);
+    
+    // Add strength training note to one easy run if applicable
+    let finalEasyDesc = easyDesc;
+    if (i === 0 && strengthTraining !== "no_not_interested") {
+      const strengthNote = getStrengthNote(strengthTraining);
+      if (strengthNote) {
+        finalEasyDesc += ` ${strengthNote}`;
+      }
+    }
+    
     sessions.push({
       day: easyDaysOrder[i],
       type: "Easy Run",
-      description: "Easy run at conversational pace. Focus on relaxed form and recovery.",
+      description: finalEasyDesc,
       durationKmOrMin: easyKmPerRun,
       intensityHint: "Easy"
     });
   }
 
-  // Focus label
-  let focus = "Solid aerobic development";
-  if (weekNumber <= 3) {
-    focus = "Base building & establishing consistency";
-  } else if (weekNumber <= 7) {
-    focus = "Building aerobic strength & specific fitness";
-  } else if (weekNumber <= 10) {
-    focus = "Race-specific sharpening";
-  } else {
-    focus = answers["goal_type"] === "unsure" ? "Consolidation block" : "Taper & freshness";
-  }
+  // Enhanced focus labels using new phase system
+  const goalType = answers["goal_type"] as string;
+  const focus = getPhaseDescription(weekNumber, goalType);
 
   return {
     week: weekNumber,
@@ -773,12 +925,12 @@ export function generateTrainingPlan(answers: QuizAnswers, persona: RunnerPerson
   const currentKmBucket = answers["current_weekly_km"] as string;
   const injuryStatus = answers["injury_status"] as string;
 
-  // Build weekly volume curve
-  const weeklyKm = buildWeeklyVolumeCurve(distance, intent, persona, currentKmBucket, injuryStatus);
-
-  // Determine ability tier once
+  // Determine ability tier once (needed for volume curve and later use)
   const currentKmEstimate = estimateCurrentKmFromBucket(currentKmBucket);
-  const abilityTier = mapToAbilityTier(persona, currentKmEstimate);
+  const abilityTier = mapToAbilityTier(answers, persona);
+  
+  // Build weekly volume curve using new config system
+  const weeklyKm = buildWeeklyVolumeCurve(distance, intent, persona, currentKmBucket, answers, injuryStatus);
 
   // Build weekly plans
   const weeklyPlans: WeeklyPlan[] = [];
@@ -811,11 +963,18 @@ export function generateTrainingPlan(answers: QuizAnswers, persona: RunnerPerson
   if (persona.id === "time_poor_3_day") {
     notes.push("Time-poor schedule — 3 key sessions per week.");
   }
+  // currentKmEstimate is already defined above, no need to redefine
   if (abilityTier === "elite" && currentKmEstimate >= 120) {
     notes.push("Elite volume — weeks built from your current 120km+ base; listen to your body.");
   }
   if (currentKmEstimate < 25 && (distance === "marathon" || distance === "50k" || distance === "80k" || distance === "100k_plus")) {
     notes.push("Introductory build block — focus on gradual progression and consistency.");
+  }
+  
+  // Add modifier-based notes
+  const { recoveryGuidance } = applyModifiers(100, answers); // Dummy value, just getting guidance
+  if (recoveryGuidance.length > 0) {
+    notes.push(...recoveryGuidance);
   }
 
   return {
