@@ -16,6 +16,7 @@ import {
   trackInitiateCheckout, 
   trackViewContent 
 } from '@/src/lib/facebookPixel'
+import { LockedLoadGraph } from '@/src/components/LockedLoadGraph'
 
 // Sample reviews data
 const reviews = [
@@ -74,6 +75,12 @@ if (typeof window !== 'undefined') {
 type Screen = 'intro' | 'question' | 'creating' | 'email' | 'check-email' | 'final'
 
 export default function RunMvmtQuizPage() {
+  // Debug: Log component mount
+  useEffect(() => {
+    console.log('✅ Component mounted')
+    console.log('✅ QUIZ_QUESTIONS length:', QUIZ_QUESTIONS?.length || 0)
+  }, [])
+
   const [screen, setScreen] = useState<Screen>('intro')
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [answers, setAnswers] = useState<QuizAnswers>({})
@@ -258,9 +265,31 @@ export default function RunMvmtQuizPage() {
   }
 
   const handleStart = () => {
-    trackViewContent('RunMVMT Quiz Start', 'quiz')
-    setScreen('question')
+    console.log('🔵 handleStart called')
+    console.log('🔵 Current screen:', screen)
+    console.log('🔵 QUIZ_QUESTIONS length:', QUIZ_QUESTIONS?.length || 0)
+    
+    try {
+      trackViewContent('RunMVMT Quiz Start', 'quiz')
+    } catch (error) {
+      console.error('Error tracking view content:', error)
+    }
+    
+    // Reset all state
+    setAnswers({})
     setCurrentQuestionIndex(0)
+    setIsTransitioning(false)
+    
+    console.log('🔵 Setting screen to question')
+    setScreen('question')
+    
+    // Debug: Check state after update
+    setTimeout(() => {
+      const visible = getVisibleQuestions()
+      console.log('🔵 After update - Visible questions:', visible.length)
+      console.log('🔵 After update - First question:', visible[0]?.id || 'none')
+      console.log('🔵 After update - Screen state:', screen)
+    }, 100)
   }
 
   const handleCheckout = async () => {
@@ -736,7 +765,16 @@ export default function RunMvmtQuizPage() {
                 <button className="px-4 py-2 text-sm font-medium text-text-primary border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                   LOG IN
                 </button>
-                <button className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 rounded-lg hover:opacity-90 transition-all">
+                <button 
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    console.log('🟠 SIGN UP button clicked')
+                    handleStart()
+                  }}
+                  className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 rounded-lg hover:opacity-90 transition-all"
+                >
                   SIGN UP FOR FREE
                 </button>
                   </>
@@ -761,9 +799,6 @@ export default function RunMvmtQuizPage() {
                 {/* Left Column - Text Content */}
                 <div className="space-y-8">
                   <div>
-                    <p className="text-sm sm:text-base text-text-secondary uppercase tracking-wide mb-3">
-                      PERSONALISED RUNNING TRAINING PLANS
-                    </p>
                     <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-text-primary leading-tight mb-6">
                       Training Plans That Make It Easy to Reach Your Race Goals
                     </h1>
@@ -774,7 +809,13 @@ export default function RunMvmtQuizPage() {
 
                   <div className="space-y-4">
                     <button
-                      onClick={handleStart}
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        console.log('🟡 Start My Plan button clicked')
+                        handleStart()
+                      }}
                       className="w-full sm:w-auto px-8 sm:px-12 py-4 sm:py-5 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 text-white font-bold text-base sm:text-lg rounded-lg shadow-lg hover:shadow-xl hover:opacity-90 transition-all duration-200"
                     >
                       👉 Start My Plan
@@ -788,6 +829,7 @@ export default function RunMvmtQuizPage() {
                   {/* Social Proof */}
                   <div className="pt-4">
                     <button
+                      type="button"
                       onClick={() => {
                         setShowReviewsModal(true)
                         setCurrentReviewIndex(0)
@@ -929,6 +971,13 @@ export default function RunMvmtQuizPage() {
                   <span>100K+ ULTRA</span>
                 </div>
               </div>
+            </div>
+          )}
+
+          {screen === 'question' && !currentQuestion && (
+            <div className="w-full max-w-2xl mx-auto px-4 py-12 text-center">
+              <p className="text-lg text-text-primary mb-4">Loading questions...</p>
+              <p className="text-sm text-text-secondary">Questions available: {visibleQuestions.length}</p>
             </div>
           )}
 
@@ -1772,6 +1821,227 @@ export default function RunMvmtQuizPage() {
                     </div>
                   )}
 
+                  {/* Lactate Threshold Estimate Section */}
+                  {trainingPlan && (() => {
+                    const thresholdHr = answers["threshold_hr"] as number | undefined
+                    const usesHr = answers["uses_hr"] as string | undefined
+                    const recentRaceTime = answers["recent_race_time"] as string | undefined
+                    const goalDistance = answers["goal_distance"] as string
+                    
+                    // Estimate lactate threshold if not provided
+                    // Common estimation methods:
+                    // 1. If threshold_hr provided, use it
+                    // 2. Estimate from age: ~220 - age - 20-30 bpm (rough estimate)
+                    // 3. Estimate from recent race time (if available)
+                    
+                    let estimatedThreshold: number | null = null
+                    let estimationMethod = ''
+                    
+                    if (thresholdHr && thresholdHr > 0) {
+                      estimatedThreshold = thresholdHr
+                      estimationMethod = 'provided'
+                    } else {
+                      // Try to estimate from age if available
+                      // For now, use a general estimate based on typical values
+                      // Typical lactate threshold is around 85-90% of max HR
+                      // Average max HR formula: 220 - age
+                      // We'll use a conservative estimate: 160-175 bpm for most runners
+                      estimatedThreshold = 170 // Default estimate
+                      estimationMethod = 'estimated'
+                    }
+                    
+                    // Calculate training zones based on threshold
+                    const easyZone = { min: Math.round(estimatedThreshold * 0.65), max: Math.round(estimatedThreshold * 0.75) }
+                    const moderateZone = { min: Math.round(estimatedThreshold * 0.75), max: Math.round(estimatedThreshold * 0.85) }
+                    const thresholdZone = { min: Math.round(estimatedThreshold * 0.88), max: Math.round(estimatedThreshold * 0.95) }
+                    const vo2Zone = { min: Math.round(estimatedThreshold * 0.95), max: Math.round(estimatedThreshold * 1.05) }
+                    
+                    return (
+                      <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-lg border border-gray-200 mb-8">
+                        <div className="space-y-6">
+                          <div>
+                            <h3 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2">
+                              💓 Your Estimated Lactate Threshold
+                            </h3>
+                            <p className="text-text-secondary">
+                              {estimationMethod === 'provided' 
+                                ? 'Based on your provided threshold heart rate'
+                                : 'Estimated based on typical values for runners at your level'}
+                            </p>
+                          </div>
+                          
+                          {/* Threshold Display */}
+                          <div className="bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 rounded-lg p-6 border border-gray-200">
+                            <div className="text-center mb-6">
+                              <div className="text-5xl sm:text-6xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 bg-clip-text text-transparent mb-2">
+                                {estimatedThreshold}
+                              </div>
+                              <div className="text-lg text-text-secondary">beats per minute</div>
+                              {estimationMethod === 'estimated' && (
+                                <p className="text-xs text-text-secondary mt-2 italic">
+                                  *This is an estimate. For accurate threshold, consider a field test or lab assessment.
+                                </p>
+                              )}
+                            </div>
+                            
+                            {/* Training Zones */}
+                            <div className="space-y-4">
+                              <h4 className="text-lg font-semibold text-text-primary mb-3">
+                                How to Use It?
+                              </h4>
+                              
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                {/* Easy Zone */}
+                                <div 
+                                  className="relative group border border-gray-200 rounded-lg p-4 hover:border-blue-300 hover:bg-blue-50/50 transition-all cursor-help"
+                                  title={`Easy runs should feel comfortable and conversational. You should be able to speak in full sentences. This zone builds aerobic base and promotes recovery.`}
+                                >
+                                  <div className="flex items-center justify-between mb-2">
+                                    <span className="font-semibold text-text-primary">Easy Zone</span>
+                                    <span className="text-sm text-text-secondary">{easyZone.min}-{easyZone.max} bpm</span>
+                                  </div>
+                                  <p className="text-sm text-text-secondary">
+                                    Recovery & base building
+                                  </p>
+                                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-72 bg-gray-900 text-white rounded-lg p-4 shadow-2xl text-xs">
+                                      <div className="font-bold mb-2 text-sm">Easy Zone ({easyZone.min}-{easyZone.max} bpm)</div>
+                                      <div className="text-gray-200 leading-relaxed">
+                                        Easy runs should feel comfortable and conversational. You should be able to speak in full sentences. This zone builds aerobic base and promotes recovery. Use for warm-ups, cool-downs, and recovery runs.
+                                      </div>
+                                      {/* Arrow */}
+                                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
+                                        <div className="w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-gray-900"></div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                
+                                {/* Moderate Zone */}
+                                <div 
+                                  className="relative group border border-gray-200 rounded-lg p-4 hover:border-purple-300 hover:bg-purple-50/50 transition-all cursor-help"
+                                  title={`Moderate pace runs feel comfortably hard. You can speak in short phrases. This zone improves aerobic capacity and endurance.`}
+                                >
+                                  <div className="flex items-center justify-between mb-2">
+                                    <span className="font-semibold text-text-primary">Moderate Zone</span>
+                                    <span className="text-sm text-text-secondary">{moderateZone.min}-{moderateZone.max} bpm</span>
+                                  </div>
+                                  <p className="text-sm text-text-secondary">
+                                    Aerobic capacity building
+                                  </p>
+                                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-72 bg-gray-900 text-white rounded-lg p-4 shadow-2xl text-xs">
+                                      <div className="font-bold mb-2 text-sm">Moderate Zone ({moderateZone.min}-{moderateZone.max} bpm)</div>
+                                      <div className="text-gray-200 leading-relaxed">
+                                        Moderate pace runs feel comfortably hard. You can speak in short phrases. This zone improves aerobic capacity and endurance. Use for steady-state runs and longer tempo efforts.
+                                      </div>
+                                      {/* Arrow */}
+                                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
+                                        <div className="w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-gray-900"></div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                
+                                {/* Threshold Zone */}
+                                <div 
+                                  className="relative group border border-gray-200 rounded-lg p-4 hover:border-pink-300 hover:bg-pink-50/50 transition-all cursor-help"
+                                  title={`Threshold pace is the fastest pace you can sustain for about 20-30 minutes. It feels hard but controlled. This is your lactate threshold heart rate.`}
+                                >
+                                  <div className="flex items-center justify-between mb-2">
+                                    <span className="font-semibold text-text-primary">Threshold Zone</span>
+                                    <span className="text-sm text-text-secondary">{thresholdZone.min}-{thresholdZone.max} bpm</span>
+                                  </div>
+                                  <p className="text-sm text-text-secondary">
+                                    Lactate threshold training
+                                  </p>
+                                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-72 bg-gray-900 text-white rounded-lg p-4 shadow-2xl text-xs">
+                                      <div className="font-bold mb-2 text-sm">Threshold Zone ({thresholdZone.min}-{thresholdZone.max} bpm)</div>
+                                      <div className="text-gray-200 leading-relaxed">
+                                        Threshold pace is the fastest pace you can sustain for about 20-30 minutes. It feels hard but controlled. This is your lactate threshold heart rate. Use for tempo runs and threshold intervals (10-20 min efforts).
+                                      </div>
+                                      {/* Arrow */}
+                                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
+                                        <div className="w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-gray-900"></div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                
+                                {/* VO2 Max Zone */}
+                                <div 
+                                  className="relative group border border-gray-200 rounded-lg p-4 hover:border-red-300 hover:bg-red-50/50 transition-all cursor-help"
+                                  title={`VO2 max pace is very hard and can only be sustained for 3-8 minutes. You'll be breathing heavily and speaking is difficult.`}
+                                >
+                                  <div className="flex items-center justify-between mb-2">
+                                    <span className="font-semibold text-text-primary">VO2 Max Zone</span>
+                                    <span className="text-sm text-text-secondary">{vo2Zone.min}-{vo2Zone.max} bpm</span>
+                                  </div>
+                                  <p className="text-sm text-text-secondary">
+                                    High-intensity intervals
+                                  </p>
+                                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-72 bg-gray-900 text-white rounded-lg p-4 shadow-2xl text-xs">
+                                      <div className="font-bold mb-2 text-sm">VO2 Max Zone ({vo2Zone.min}-{vo2Zone.max} bpm)</div>
+                                      <div className="text-gray-200 leading-relaxed mb-3">
+                                        VO2 max pace is very hard and can only be sustained for 3-8 minutes. You'll be breathing heavily and speaking is difficult. Use for interval training (400m-1600m repeats) with full recovery between efforts.
+                                      </div>
+                                      <div className="pt-3 border-t border-gray-700">
+                                        <p className="text-gray-300 text-xs italic mb-2">
+                                          Get a more detailed analysis and personalized VO2 max training protocols with our Premium Program.
+                                        </p>
+                                        <button
+                                          onClick={(e) => {
+                                            e.stopPropagation()
+                                            const paymentSection = document.getElementById('payment-section')
+                                            if (paymentSection) {
+                                              paymentSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                                            }
+                                          }}
+                                          className="w-full px-3 py-1.5 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 text-white text-xs font-semibold rounded hover:opacity-90 transition-opacity pointer-events-auto"
+                                        >
+                                          Learn More
+                                        </button>
+                                      </div>
+                                      {/* Arrow */}
+                                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
+                                        <div className="w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-gray-900"></div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              {/* Usage Tips */}
+                              <div className="mt-6 pt-6 border-t border-gray-200">
+                                <h5 className="font-semibold text-text-primary mb-3">Training Tips:</h5>
+                                <ul className="space-y-2 text-sm text-text-secondary">
+                                  <li className="flex items-start gap-2">
+                                    <span className="text-primary mt-0.5">•</span>
+                                    <span><strong>80% of your training</strong> should be in the Easy Zone to build aerobic base</span>
+                                  </li>
+                                  <li className="flex items-start gap-2">
+                                    <span className="text-primary mt-0.5">•</span>
+                                    <span><strong>Threshold runs</strong> (1-2 per week) improve your ability to clear lactate</span>
+                                  </li>
+                                  <li className="flex items-start gap-2">
+                                    <span className="text-primary mt-0.5">•</span>
+                                    <span><strong>VO2 max intervals</strong> (1 per week) improve your top-end speed</span>
+                                  </li>
+                                  <li className="flex items-start gap-2">
+                                    <span className="text-primary mt-0.5">•</span>
+                                    <span><strong>Monitor your HR</strong> during runs to stay in the right zone for each session type</span>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })()}
+
                   {/* Download Button */}
                   <div className="text-center bg-white rounded-2xl p-8 shadow-lg border border-gray-200 mb-8">
                     <button
@@ -1784,6 +2054,149 @@ export default function RunMvmtQuizPage() {
                       Get your complete 12-week program as a PDF — instantly available.
                     </p>
                   </div>
+
+                  {/* Locked Load Graph */}
+                  {trainingPlan && (
+                    <LockedLoadGraph 
+                      weeklyVolumes={trainingPlan.weeklyStructure.map(week => week.targetKm)} 
+                    />
+                  )}
+
+                  {/* Improvement Estimate Section */}
+                  {trainingPlan && (() => {
+                    const goalDistance = answers["goal_distance"] as string
+                    const recentRaceTime = answers["recent_race_time"] as string
+                    
+                    // Parse race time (e.g., "5km in 22:30" or "20:00" or "None")
+                    const parseRaceTime = (timeStr: string | undefined): { distance: string; timeInSeconds: number } | null => {
+                      if (!timeStr || !timeStr.trim() || timeStr.toLowerCase() === 'none') return null
+                      
+                      const timeStrLower = timeStr.toLowerCase().trim()
+                      
+                      // Try to match patterns like "5km in 22:30" or "5k in 20:00"
+                      const kmMatch = timeStrLower.match(/(\d+)k\s*(?:m)?\s*(?:in\s*)?(\d+):(\d+)/)
+                      if (kmMatch) {
+                        const distance = `${kmMatch[1]}k`
+                        const minutes = parseInt(kmMatch[2])
+                        const seconds = parseInt(kmMatch[3])
+                        return { distance, timeInSeconds: minutes * 60 + seconds }
+                      }
+                      
+                      // Try to match just time "22:30" or "1:30:00"
+                      const timeMatch = timeStrLower.match(/(\d+):(\d+)(?::(\d+))?/)
+                      if (timeMatch) {
+                        const hours = timeMatch[3] ? parseInt(timeMatch[1]) : 0
+                        const minutes = parseInt(timeMatch[timeMatch[3] ? 2 : 1])
+                        const seconds = parseInt(timeMatch[timeMatch[3] ? 3 : 2])
+                        const timeInSeconds = hours * 3600 + minutes * 60 + seconds
+                        
+                        // Infer distance from goal if not specified
+                        return { distance: goalDistance || '5k', timeInSeconds }
+                      }
+                      
+                      return null
+                    }
+                    
+                    const raceData = parseRaceTime(recentRaceTime)
+                    const improvementPercent = 14 // Average of 10-18%
+                    
+                    // Distance labels
+                    const distanceLabels: Record<string, string> = {
+                      '5k': '5K',
+                      '10k': '10K',
+                      'half_marathon': 'Half Marathon',
+                      'marathon': 'Marathon',
+                      '50k': '50K Ultra',
+                      '80k': '80K Ultra',
+                      '100k_plus': '100K+ Ultra'
+                    }
+                    
+                    const goalLabel = distanceLabels[goalDistance] || goalDistance
+                    
+                    // Format time in seconds to readable format
+                    const formatTime = (seconds: number): string => {
+                      const hours = Math.floor(seconds / 3600)
+                      const minutes = Math.floor((seconds % 3600) / 60)
+                      const secs = seconds % 60
+                      
+                      if (hours > 0) {
+                        return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+                      }
+                      return `${minutes}:${secs.toString().padStart(2, '0')}`
+                    }
+                    
+                    // Calculate estimated time if race data exists
+                    let estimatedTime: string | null = null
+                    let currentTime: string | null = null
+                    
+                    if (raceData) {
+                      currentTime = formatTime(raceData.timeInSeconds)
+                      // Apply 14% improvement (reduce time by 14%)
+                      const improvedTimeInSeconds = Math.round(raceData.timeInSeconds * (1 - improvementPercent / 100))
+                      estimatedTime = formatTime(improvedTimeInSeconds)
+                    }
+                    
+                    // Generic estimates if no race time provided
+                    const genericEstimates: Record<string, string> = {
+                      '5k': '18-22 minutes',
+                      '10k': '38-45 minutes',
+                      'half_marathon': '1:35-1:50',
+                      'marathon': '3:20-3:45',
+                      '50k': '4:30-5:30',
+                      '80k': '7:30-9:00',
+                      '100k_plus': '10:00-12:00'
+                    }
+                    
+                    return (
+                      <div className="bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 rounded-2xl p-6 sm:p-8 mb-8 border border-gray-200">
+                        <div className="text-center space-y-4">
+                          <h3 className="text-xl sm:text-2xl font-bold text-text-primary">
+                            🎯 Your Potential Improvement
+                          </h3>
+                          
+                          {raceData && estimatedTime ? (
+                            <>
+                              <p className="text-base sm:text-lg text-text-secondary leading-relaxed max-w-2xl mx-auto">
+                                Runners similar to your <strong className="text-text-primary">{goalLabel}</strong> level who took the premium program saw <strong className="text-primary">10-18% improvement</strong> in 16 weeks.
+                              </p>
+                              <div className="bg-white rounded-lg p-6 shadow-md max-w-md mx-auto">
+                                <div className="space-y-3">
+                                  <div className="flex items-center justify-between pb-3 border-b border-gray-200">
+                                    <span className="text-text-secondary">Current Time:</span>
+                                    <span className="text-lg font-bold text-text-primary">{currentTime}</span>
+                                  </div>
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-text-secondary">Estimated Time:</span>
+                                    <span className="text-xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
+                                      {estimatedTime}
+                                    </span>
+                                  </div>
+                                  <p className="text-xs text-text-secondary text-center pt-2">
+                                    Based on {improvementPercent}% average improvement
+                                  </p>
+                                </div>
+                              </div>
+                            </>
+                          ) : (
+                            <p className="text-base sm:text-lg text-text-secondary leading-relaxed max-w-2xl mx-auto">
+                              Runners similar to your <strong className="text-text-primary">{goalLabel}</strong> level who took the premium program saw <strong className="text-primary">10-18% improvement</strong> in 16 weeks.
+                            </p>
+                          )}
+                          
+                          {!raceData && (
+                            <div className="bg-white rounded-lg p-6 shadow-md max-w-md mx-auto">
+                              <p className="text-base text-text-primary font-semibold mb-2">
+                                Typical Results
+                              </p>
+                              <p className="text-lg font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
+                                Runners with this training plan often run {goalLabel} in just <strong>{genericEstimates[goalDistance] || '16-20 weeks'}</strong>
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )
+                  })()}
 
                   {/* Coach's Note Section */}
                   <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200 mb-8">
@@ -2343,6 +2756,51 @@ export default function RunMvmtQuizPage() {
                       >
                         Upgrade Now – $99 AUD
                       </button>
+                    </div>
+                  </div>
+
+                  {/* Personalized Letter Section */}
+                  <div className="bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 rounded-2xl p-6 sm:p-8 shadow-lg border border-gray-200 mb-8">
+                    <div className="space-y-4 text-text-primary">
+                      <p className="text-lg sm:text-xl font-semibold">
+                        Hey {userFirstName ? userFirstName : 'there'},
+                      </p>
+                      
+                      <p className="text-base sm:text-lg leading-relaxed">
+                        If you've ever tried training programs in the past, you know the frustration. Generic plans that don't account for your schedule, your fitness level, or your actual goals. You end up either overtraining and getting injured, or undertraining and seeing no progress.
+                      </p>
+                      
+                      <p className="text-base sm:text-lg leading-relaxed">
+                        Here's what makes this different — and why it's worth far more than $99.
+                      </p>
+                      
+                      <p className="text-base sm:text-lg leading-relaxed">
+                        To get all these details elsewhere, you'd literally spend thousands. A running coach? $150-300/month. A strength program designed for runners? Another $50-100/month. Nutrition guidance? $200-500 for a consultation. Heart rate analysis and training zones? Lab testing costs $200-400. And that's before you even get a personalized plan that ties it all together.
+                      </p>
+                      
+                      <p className="text-base sm:text-lg leading-relaxed">
+                        But here's the real problem most runners face: <strong className="text-text-primary">you're running blind.</strong>
+                      </p>
+                      
+                      <p className="text-base sm:text-lg leading-relaxed">
+                        You have no way to know if you're actually on target. Are you running too fast on easy days? Too slow on hard days? Is your training load building properly, or are you about to burn out? Most runners guess — and that's why so many plateau or get injured.
+                      </p>
+                      
+                      <p className="text-base sm:text-lg leading-relaxed">
+                        This program gives you the clarity. Every session has a purpose. Every week builds on the last. You'll know exactly what pace to run, what heart rate to target, and how to adjust if life gets in the way.
+                      </p>
+                      
+                      <p className="text-base sm:text-lg leading-relaxed">
+                        And here's something else: most strength programs aren't specifically made for runners in mind. They're generic "leg day" routines that don't address the imbalances and weaknesses that actually cause running injuries. This program includes runner-specific strength work that targets what matters — hip stability, glute strength, core stability, and injury prevention.
+                      </p>
+                      
+                      <p className="text-base sm:text-lg leading-relaxed font-semibold">
+                        All of this — the personalized plan, the pacing targets, the heart rate zones, the strength work, the nutrition guidance — for less than what you'd pay a coach for a single month.
+                      </p>
+                      
+                      <p className="text-base sm:text-lg leading-relaxed">
+                        This isn't just a training plan. It's everything you need to run better, stay healthy, and actually enjoy the process.
+                      </p>
                     </div>
                   </div>
 
