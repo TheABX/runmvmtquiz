@@ -736,7 +736,10 @@ export default function RunMvmtQuizPage() {
                 <button className="px-4 py-2 text-sm font-medium text-text-primary border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                   LOG IN
                 </button>
-                <button className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 rounded-lg hover:opacity-90 transition-all">
+                <button 
+                  onClick={handleStart}
+                  className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 rounded-lg hover:opacity-90 transition-all"
+                >
                   SIGN UP FOR FREE
                 </button>
                   </>
@@ -761,14 +764,15 @@ export default function RunMvmtQuizPage() {
                 {/* Left Column - Text Content */}
                 <div className="space-y-8">
                   <div>
-                    <p className="text-sm sm:text-base text-text-secondary uppercase tracking-wide mb-3">
-                      PERSONALISED RUNNING TRAINING PLANS
-                    </p>
-                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-text-primary leading-tight mb-6">
-                      Training Plans That Make It Easy to Reach Your Race Goals
+                    <h1 className="hero-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-text-primary mb-6 leading-tight">
+                      Personalised Training,<br />
+                      Built Around You
                     </h1>
-                    <p className="text-lg sm:text-xl text-text-secondary leading-relaxed mb-8">
-                      Reach your full potential with RUN MVMT: personalized training plans made specifically for runners who want to achieve something amazing in their running journey.
+                    <p className="text-lg sm:text-xl text-text-secondary leading-relaxed mb-4">
+                      Smart, adaptive plans designed to take you from where you are now to race day ready, without guesswork.
+                    </p>
+                    <p className="text-base sm:text-lg font-semibold text-text-primary mb-8">
+                      <span className="line-through">$87</span> Free (Early Access)
                     </p>
                   </div>
 
@@ -813,7 +817,7 @@ export default function RunMvmtQuizPage() {
                       <div className="flex items-start gap-2">
                         <span className="text-primary text-lg mt-0.5 flex-shrink-0">✔</span>
                         <p className="text-sm text-text-primary leading-relaxed">
-                          Created by elite athlete & national-level runner
+                          Created by elite athlete & national level runners
                         </p>
                       </div>
                       <div className="flex items-start gap-2">
@@ -840,66 +844,101 @@ export default function RunMvmtQuizPage() {
 
                 {/* Right Column - Visual Elements */}
                 <div className="relative hidden lg:block">
-                  {/* Mock Training Plan Preview Card */}
+                  {/* Enhanced Mock Training Plan Preview Card */}
                   <div className="relative bg-white rounded-2xl shadow-2xl p-6 border border-gray-200 transform rotate-2">
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <h3 className="text-lg font-bold text-text-primary">TRAINING PLAN</h3>
-                        <div className="text-xs text-text-secondary">Week 1 of 12</div>
-                      </div>
-                      
-                      {/* Mini Calendar */}
-                      <div className="grid grid-cols-7 gap-1">
-                        {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, i) => (
-                          <div key={i} className={`text-center p-2 rounded ${i === 0 || i === 2 || i === 4 || i === 6 ? 'bg-blue-50 border border-blue-200' : 'bg-gray-50'}`}>
-                            <div className="text-xs text-text-secondary mb-1">{day}</div>
-                            {i === 0 || i === 2 || i === 4 || i === 6 ? (
-                              <div className="text-xs font-semibold text-blue-700">8km</div>
-                            ) : null}
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Stats */}
-                      <div className="grid grid-cols-2 gap-3 pt-2">
-                        <div className="bg-gray-50 rounded-lg p-3">
-                          <div className="text-xs text-text-secondary mb-1">Total Distance</div>
-                          <div className="text-xl font-bold text-primary">42km</div>
+                    <div className="space-y-5">
+                      {/* Header with Plan Type */}
+                      <div className="flex items-center justify-between pb-3 border-b border-gray-200">
+                        <div>
+                          <div className="text-xs text-text-secondary uppercase tracking-wide mb-1">Your Training Plan</div>
+                          <h3 className="text-xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
+                            HALF MARATHON
+                          </h3>
                         </div>
-                        <div className="bg-gray-50 rounded-lg p-3">
-                          <div className="text-xs text-text-secondary mb-1">Training Days</div>
-                          <div className="text-xl font-bold text-primary">5 days</div>
+                        <div className="text-right">
+                          <div className="text-xs text-text-secondary">Week</div>
+                          <div className="text-lg font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
+                            3 of 12
+                          </div>
                         </div>
                       </div>
 
-                      {/* Progress Circle Placeholder */}
-                      <div className="flex items-center justify-center pt-2">
-                        <div className="relative w-24 h-24">
-                          <svg className="transform -rotate-90 w-24 h-24">
-                            <circle
-                              cx="48"
-                              cy="48"
-                              r="40"
-                              stroke="#E5E7EB"
-                              strokeWidth="8"
-                              fill="none"
-                            />
-                            <circle
-                              cx="48"
-                              cy="48"
-                              r="40"
-                              stroke="#145A5A"
-                              strokeWidth="8"
-                              fill="none"
-                              strokeDasharray={`${2 * Math.PI * 40}`}
-                              strokeDashoffset={`${2 * Math.PI * 40 * 0.3}`}
-                            />
-                          </svg>
-                          <div className="absolute inset-0 flex flex-col items-center justify-center">
-                            <div className="text-lg font-bold text-text-primary">82%</div>
-                            <div className="text-xs text-text-secondary">Complete</div>
+                      {/* Key Metrics */}
+                      <div className="grid grid-cols-3 gap-2">
+                        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-3 border border-blue-200">
+                          <div className="text-xs text-blue-600 font-medium mb-1">This Week</div>
+                          <div className="text-lg font-bold text-blue-700"><span style={{ filter: "blur(3px)" }}>48km</span></div>
+                        </div>
+                        <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-3 border border-purple-200">
+                          <div className="text-xs text-purple-600 font-medium mb-1">Sessions</div>
+                          <div className="text-lg font-bold text-purple-700">5</div>
+                        </div>
+                        <div className="bg-gradient-to-br from-pink-50 to-pink-100 rounded-lg p-3 border border-pink-200">
+                          <div className="text-xs text-pink-600 font-medium mb-1">Progress</div>
+                          <div className="text-lg font-bold text-pink-700">25%</div>
+                        </div>
+                      </div>
+
+                      {/* Week Focus */}
+                      <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                        <div className="text-xs text-text-secondary mb-1">Week Focus</div>
+                        <div className="text-sm font-semibold text-text-primary">Aerobic Base Building</div>
+                      </div>
+
+                      {/* Sample Training Sessions Preview */}
+                      <div className="space-y-2">
+                        <div className="text-xs font-semibold text-text-primary uppercase tracking-wide">This Week's Sessions</div>
+                        <div className="space-y-2">
+                          {/* Session 1 - Long Run */}
+                          <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-3 border-l-4 border-blue-500">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-xs font-semibold text-blue-700">Sunday</span>
+                              <span className="text-xs font-bold text-blue-600" style={{ filter: "blur(3px)" }}>18km</span>
+                            </div>
+                            <div className="text-xs text-blue-600 font-medium" style={{ filter: "blur(3px)" }}>Long Run</div>
+                            <div className="text-xs text-blue-500 mt-1" style={{ filter: "blur(3px)" }}>Easy pace, build endurance</div>
+                          </div>
+
+                          {/* Session 2 - Intervals */}
+                          <div className="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-3 border-l-4 border-purple-500">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-xs font-semibold text-purple-700">Tuesday</span>
+                              <span className="text-xs font-bold text-purple-600" style={{ filter: "blur(3px)" }}>12km</span>
+                            </div>
+                            <div className="text-xs text-purple-600 font-medium" style={{ filter: "blur(3px)" }}>Intervals</div>
+                            <div className="text-xs text-purple-500 mt-1" style={{ filter: "blur(3px)" }}>5 × 1km @ 10k pace</div>
+                          </div>
+
+                          {/* Session 3 - Easy Run */}
+                          <div className="bg-gradient-to-r from-pink-50 to-pink-100 rounded-lg p-3 border-l-4 border-pink-500">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-xs font-semibold text-pink-700">Thursday</span>
+                              <span className="text-xs font-bold text-pink-600" style={{ filter: "blur(3px)" }}>8km</span>
+                            </div>
+                            <div className="text-xs text-pink-600 font-medium" style={{ filter: "blur(3px)" }}>Easy Run</div>
+                            <div className="text-xs text-pink-500 mt-1" style={{ filter: "blur(3px)" }}>Recovery pace</div>
                           </div>
                         </div>
+                      </div>
+
+                      {/* Progress Indicator */}
+                      <div className="pt-2 border-t border-gray-200">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs text-text-secondary">Program Progress</span>
+                          <span className="text-xs font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">25% Complete</span>
+                        </div>
+                        <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 rounded-full transition-all"
+                            style={{ width: '25%' }}
+                          ></div>
+                        </div>
+                      </div>
+
+                      {/* Call to Action Badge */}
+                      <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 rounded-lg p-3 text-center">
+                        <div className="text-white text-xs font-semibold mb-1">✨ Personalized for You</div>
+                        <div className="text-white text-xs opacity-90">12-week program tailored to your goals</div>
                       </div>
                     </div>
                   </div>

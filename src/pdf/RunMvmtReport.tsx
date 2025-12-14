@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     lineHeight: 1.3,
   },
   highlightBox: {
-    backgroundColor: "#F5F3FF",
+    backgroundColor: "#EFF6FF",  // blue-50 tint
     borderRadius: 8,
     padding: 12,
     marginBottom: 12,
@@ -129,7 +129,7 @@ const RunMvmtLayout: React.FC<{
       width: 140,
       height: 140,
       borderRadius: 70,
-      backgroundColor: "#E3E8FF",
+      backgroundColor: "#DBEAFE",  // blue-100
       opacity: 0.4,
     },
     decorativeBlob2: {
@@ -139,7 +139,7 @@ const RunMvmtLayout: React.FC<{
       width: 60,
       height: 60,
       borderRadius: 30,
-      backgroundColor: "#FFD66B",
+      backgroundColor: "#F3E8FF",  // purple-100
       opacity: 0.3,
     },
     title: {
@@ -167,11 +167,11 @@ const RunMvmtLayout: React.FC<{
       marginBottom: 4,
     },
     pillPrimary: {
-      backgroundColor: "#E3E8FF",
+      backgroundColor: "#DBEAFE",  // blue-100
       color: theme.colors.textMain,
     },
     pillSoft: {
-      backgroundColor: "#FFE5D5",
+      backgroundColor: "#FCE7F3",  // pink-100
       color: theme.colors.textMain,
     },
     footer: {
