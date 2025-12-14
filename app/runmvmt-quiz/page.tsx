@@ -896,7 +896,7 @@ export default function RunMvmtQuizPage() {
                           <div key={i} className={`text-center p-2 rounded ${i === 0 || i === 2 || i === 4 || i === 6 ? 'bg-blue-50 border border-blue-200' : 'bg-gray-50'}`}>
                             <div className="text-xs text-text-secondary mb-1">{day}</div>
                             {i === 0 || i === 2 || i === 4 || i === 6 ? (
-                              <div className="text-xs font-semibold text-blue-700">8km</div>
+                              <div className="text-xs font-semibold text-blue-700">10km</div>
                             ) : null}
                           </div>
                         ))}
