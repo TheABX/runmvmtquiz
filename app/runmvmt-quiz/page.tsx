@@ -1811,6 +1811,147 @@ export default function RunMvmtQuizPage() {
                     </div>
                   )}
 
+                  {/* Training Load Graph */}
+                  {trainingPlan && trainingPlan.weeklyStructure && trainingPlan.weeklyStructure.length > 0 && (
+                    <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-lg border border-gray-200 mb-8">
+                      <h3 className="text-2xl sm:text-3xl font-bold text-text-primary mb-6">
+                        12-Week Training Load Progression
+                      </h3>
+                      <p className="text-sm text-text-secondary mb-6">
+                        Your weekly volume progression over the 12-week program
+                      </p>
+                      
+                      <div className="relative">
+                        {/* Chart container with line overlay */}
+                        <div className="relative" style={{ minHeight: '200px', paddingTop: '12px', paddingBottom: '60px' }}>
+                          {/* Bars */}
+                          <div className="flex items-end gap-2 sm:gap-3 relative z-0" style={{ minHeight: '200px' }}>
+                            {trainingPlan.weeklyStructure.map((week, index) => {
+                              const maxKm = Math.max(...trainingPlan.weeklyStructure.map(w => w.targetKm));
+                              const heightPercentage = (week.targetKm / maxKm) * 100;
+                              const gradientPosition = (index / 11) * 100;
+                              
+                              return (
+                                <div key={week.week} className="flex-1 flex flex-col items-center">
+                                  {/* Bar */}
+                                  <div className="w-full flex flex-col items-center justify-end" style={{ minHeight: '200px' }}>
+                                    <div
+                                      className="w-full rounded-t-lg transition-all duration-300 hover:opacity-80 relative group"
+                                      style={{
+                                        height: `${Math.max(heightPercentage, 5)}%`,
+                                        background: `linear-gradient(to top, 
+                                          rgb(37, 99, 235) ${Math.max(0, gradientPosition - 33)}%, 
+                                          rgb(147, 51, 234) ${gradientPosition}%, 
+                                          rgb(236, 72, 153) ${Math.min(100, gradientPosition + 33)}%)`
+                                      }}
+                                    >
+                                      {/* Tooltip on hover */}
+                                      <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-gray-900 text-white text-xs px-2 py-1 rounded whitespace-nowrap pointer-events-none">
+                                        Week {week.week}: {week.targetKm}km
+                                      </div>
+                                    </div>
+                                  </div>
+                                  {/* Week label */}
+                                  <div className="mt-2 text-xs font-semibold text-text-secondary">
+                                    W{week.week}
+                                  </div>
+                                  {/* Value label */}
+                                  <div className="mt-1 text-xs text-text-primary font-medium">
+                                    {week.targetKm}km
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                          
+                          {/* SVG line overlay - positioned above bars with top padding */}
+                          <svg 
+                            className="absolute left-0 w-full pointer-events-none z-20"
+                            style={{ height: '200px', top: '12px' }}
+                            viewBox="0 0 1000 200"
+                            preserveAspectRatio="none"
+                          >
+                            {/* Gradient definition for the line */}
+                            <defs>
+                              <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stopColor="rgb(37, 99, 235)" />
+                                <stop offset="50%" stopColor="rgb(147, 51, 234)" />
+                                <stop offset="100%" stopColor="rgb(236, 72, 153)" />
+                              </linearGradient>
+                            </defs>
+                            <polyline
+                              points={trainingPlan.weeklyStructure.map((week, index) => {
+                                const maxKm = Math.max(...trainingPlan.weeklyStructure.map(w => w.targetKm));
+                                const heightPercentage = (week.targetKm / maxKm) * 100;
+                                // Calculate x position: each bar takes up equal space (1000 / 12), centered
+                                const barWidth = 1000 / trainingPlan.weeklyStructure.length;
+                                const x = (index * barWidth) + (barWidth / 2);
+                                // Calculate y position: from bottom (200) minus the height percentage
+                                const y = 200 - (heightPercentage * 200 / 100);
+                                return `${x},${y}`;
+                              }).join(' ')}
+                              fill="none"
+                              stroke="url(#lineGradient)"
+                              strokeWidth="4"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            {/* Data points - white squares with gradient border */}
+                            {trainingPlan.weeklyStructure.map((week, index) => {
+                              const maxKm = Math.max(...trainingPlan.weeklyStructure.map(w => w.targetKm));
+                              const heightPercentage = (week.targetKm / maxKm) * 100;
+                              const barWidth = 1000 / trainingPlan.weeklyStructure.length;
+                              const x = (index * barWidth) + (barWidth / 2);
+                              const y = 200 - (heightPercentage * 200 / 100);
+                              return (
+                                <g key={`point-${week.week}`}>
+                                  <rect
+                                    x={x - 3}
+                                    y={y - 3}
+                                    width="6"
+                                    height="6"
+                                    fill="white"
+                                    stroke="url(#lineGradient)"
+                                    strokeWidth="1.5"
+                                    rx="1"
+                                  />
+                                </g>
+                              );
+                            })}
+                          </svg>
+                        </div>
+                      </div>
+                      
+                      {/* Summary stats */}
+                      <div className="mt-6 pt-6 border-t border-gray-200 grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <div className="text-center">
+                          <p className="text-xs text-text-secondary mb-1">Start Volume</p>
+                          <p className="text-lg font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
+                            {trainingPlan.weeklyStructure[0]?.targetKm || 0}km
+                          </p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-xs text-text-secondary mb-1">Peak Volume</p>
+                          <p className="text-lg font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
+                            {Math.max(...trainingPlan.weeklyStructure.map(w => w.targetKm))}km
+                          </p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-xs text-text-secondary mb-1">Total Volume</p>
+                          <p className="text-lg font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
+                            {trainingPlan.weeklyStructure.reduce((sum, w) => sum + w.targetKm, 0)}km
+                          </p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-xs text-text-secondary mb-1">Avg Weekly</p>
+                          <p className="text-lg font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
+                            {Math.round(trainingPlan.weeklyStructure.reduce((sum, w) => sum + w.targetKm, 0) / trainingPlan.weeklyStructure.length)}km
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Download Button */}
                   <div className="text-center bg-white rounded-2xl p-8 shadow-lg border border-gray-200 mb-8">
                     <button
