@@ -24,6 +24,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
   "5k": {
     complete: {
       beginner: { startMin: 15, startMax: 25, peakMin: 25, peakMax: 35, longRunPeakMin: 8, longRunPeakMax: 10 },
+      intermediate: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50, longRunPeakMin: 10, longRunPeakMax: 12 },
       lower_intermediate: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50, longRunPeakMin: 10, longRunPeakMax: 12 },
       upper_intermediate: { startMin: 35, startMax: 45, peakMin: 50, peakMax: 70, longRunPeakMin: 12, longRunPeakMax: 16 },
       advanced: { startMin: 45, startMax: 60, peakMin: 60, peakMax: 90, longRunPeakMin: 12, longRunPeakMax: 16 },
@@ -32,6 +33,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     comfortable: {
       beginner: { startMin: 15, startMax: 25, peakMin: 25, peakMax: 35, longRunPeakMin: 8, longRunPeakMax: 10 },
+      intermediate: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50, longRunPeakMin: 10, longRunPeakMax: 12 },
       lower_intermediate: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50, longRunPeakMin: 10, longRunPeakMax: 12 },
       upper_intermediate: { startMin: 35, startMax: 45, peakMin: 50, peakMax: 70, longRunPeakMin: 12, longRunPeakMax: 16 },
       advanced: { startMin: 45, startMax: 60, peakMin: 60, peakMax: 90, longRunPeakMin: 12, longRunPeakMax: 16 },
@@ -40,6 +42,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     pb: {
       beginner: { startMin: 15, startMax: 25, peakMin: 25, peakMax: 35, longRunPeakMin: 8, longRunPeakMax: 10 },
+      intermediate: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50, longRunPeakMin: 10, longRunPeakMax: 12 },
       lower_intermediate: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50, longRunPeakMin: 10, longRunPeakMax: 12 },
       upper_intermediate: { startMin: 35, startMax: 45, peakMin: 50, peakMax: 70, longRunPeakMin: 12, longRunPeakMax: 16 },
       advanced: { startMin: 45, startMax: 60, peakMin: 60, peakMax: 90, longRunPeakMin: 12, longRunPeakMax: 16 },
@@ -48,6 +51,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     race: {
       beginner: { startMin: 15, startMax: 25, peakMin: 25, peakMax: 35, longRunPeakMin: 8, longRunPeakMax: 10 },
+      intermediate: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50, longRunPeakMin: 10, longRunPeakMax: 12 },
       lower_intermediate: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50, longRunPeakMin: 10, longRunPeakMax: 12 },
       upper_intermediate: { startMin: 35, startMax: 45, peakMin: 50, peakMax: 70, longRunPeakMin: 12, longRunPeakMax: 16 },
       advanced: { startMin: 45, startMax: 60, peakMin: 60, peakMax: 90, longRunPeakMin: 12, longRunPeakMax: 16 },
@@ -56,6 +60,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     unsure: {
       beginner: { startMin: 15, startMax: 25, peakMin: 25, peakMax: 35, longRunPeakMin: 8, longRunPeakMax: 10 },
+      intermediate: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50, longRunPeakMin: 10, longRunPeakMax: 12 },
       lower_intermediate: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50, longRunPeakMin: 10, longRunPeakMax: 12 },
       upper_intermediate: { startMin: 35, startMax: 45, peakMin: 50, peakMax: 70, longRunPeakMin: 12, longRunPeakMax: 16 },
       advanced: { startMin: 45, startMax: 60, peakMin: 60, peakMax: 90, longRunPeakMin: 12, longRunPeakMax: 16 },
@@ -66,6 +71,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
   "10k": {
     complete: {
       beginner: { startMin: 20, startMax: 30, peakMin: 30, peakMax: 40, longRunPeakMin: 12, longRunPeakMax: 14 },
+      intermediate: { startMin: 30, startMax: 40, peakMin: 40, peakMax: 55, longRunPeakMin: 14, longRunPeakMax: 18 },
       lower_intermediate: { startMin: 30, startMax: 40, peakMin: 40, peakMax: 55, longRunPeakMin: 14, longRunPeakMax: 18 },
       upper_intermediate: { startMin: 40, startMax: 55, peakMin: 55, peakMax: 75, longRunPeakMin: 16, longRunPeakMax: 22 },
       advanced: { startMin: 55, startMax: 75, peakMin: 75, peakMax: 110, longRunPeakMin: 16, longRunPeakMax: 22 },
@@ -74,6 +80,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     comfortable: {
       beginner: { startMin: 20, startMax: 30, peakMin: 30, peakMax: 40, longRunPeakMin: 12, longRunPeakMax: 14 },
+      intermediate: { startMin: 30, startMax: 40, peakMin: 40, peakMax: 55, longRunPeakMin: 14, longRunPeakMax: 18 },
       lower_intermediate: { startMin: 30, startMax: 40, peakMin: 40, peakMax: 55, longRunPeakMin: 14, longRunPeakMax: 18 },
       upper_intermediate: { startMin: 40, startMax: 55, peakMin: 55, peakMax: 75, longRunPeakMin: 16, longRunPeakMax: 22 },
       advanced: { startMin: 55, startMax: 75, peakMin: 75, peakMax: 110, longRunPeakMin: 16, longRunPeakMax: 22 },
@@ -82,6 +89,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     pb: {
       beginner: { startMin: 20, startMax: 30, peakMin: 30, peakMax: 40, longRunPeakMin: 12, longRunPeakMax: 14 },
+      intermediate: { startMin: 30, startMax: 40, peakMin: 40, peakMax: 55, longRunPeakMin: 14, longRunPeakMax: 18 },
       lower_intermediate: { startMin: 30, startMax: 40, peakMin: 40, peakMax: 55, longRunPeakMin: 14, longRunPeakMax: 18 },
       upper_intermediate: { startMin: 40, startMax: 55, peakMin: 55, peakMax: 75, longRunPeakMin: 16, longRunPeakMax: 22 },
       advanced: { startMin: 55, startMax: 75, peakMin: 75, peakMax: 110, longRunPeakMin: 16, longRunPeakMax: 22 },
@@ -90,6 +98,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     race: {
       beginner: { startMin: 20, startMax: 30, peakMin: 30, peakMax: 40, longRunPeakMin: 12, longRunPeakMax: 14 },
+      intermediate: { startMin: 30, startMax: 40, peakMin: 40, peakMax: 55, longRunPeakMin: 14, longRunPeakMax: 18 },
       lower_intermediate: { startMin: 30, startMax: 40, peakMin: 40, peakMax: 55, longRunPeakMin: 14, longRunPeakMax: 18 },
       upper_intermediate: { startMin: 40, startMax: 55, peakMin: 55, peakMax: 75, longRunPeakMin: 16, longRunPeakMax: 22 },
       advanced: { startMin: 55, startMax: 75, peakMin: 75, peakMax: 110, longRunPeakMin: 16, longRunPeakMax: 22 },
@@ -98,6 +107,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     unsure: {
       beginner: { startMin: 20, startMax: 30, peakMin: 30, peakMax: 40, longRunPeakMin: 12, longRunPeakMax: 14 },
+      intermediate: { startMin: 30, startMax: 40, peakMin: 40, peakMax: 55, longRunPeakMin: 14, longRunPeakMax: 18 },
       lower_intermediate: { startMin: 30, startMax: 40, peakMin: 40, peakMax: 55, longRunPeakMin: 14, longRunPeakMax: 18 },
       upper_intermediate: { startMin: 40, startMax: 55, peakMin: 55, peakMax: 75, longRunPeakMin: 16, longRunPeakMax: 22 },
       advanced: { startMin: 55, startMax: 75, peakMin: 75, peakMax: 110, longRunPeakMin: 16, longRunPeakMax: 22 },
@@ -108,6 +118,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
   "half_marathon": {
     complete: {
       beginner: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50, longRunPeakMin: 16, longRunPeakMax: 18 },
+      intermediate: { startMin: 35, startMax: 45, peakMin: 45, peakMax: 65, longRunPeakMin: 18, longRunPeakMax: 21 },
       lower_intermediate: { startMin: 35, startMax: 45, peakMin: 45, peakMax: 65, longRunPeakMin: 18, longRunPeakMax: 21 },
       upper_intermediate: { startMin: 45, startMax: 60, peakMin: 65, peakMax: 85, longRunPeakMin: 21, longRunPeakMax: 24 },
       advanced: { startMin: 60, startMax: 80, peakMin: 80, peakMax: 100, longRunPeakMin: 22, longRunPeakMax: 26 },
@@ -116,6 +127,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     comfortable: {
       beginner: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50, longRunPeakMin: 16, longRunPeakMax: 18 },
+      intermediate: { startMin: 35, startMax: 45, peakMin: 45, peakMax: 65, longRunPeakMin: 18, longRunPeakMax: 21 },
       lower_intermediate: { startMin: 35, startMax: 45, peakMin: 45, peakMax: 65, longRunPeakMin: 18, longRunPeakMax: 21 },
       upper_intermediate: { startMin: 45, startMax: 60, peakMin: 65, peakMax: 85, longRunPeakMin: 21, longRunPeakMax: 24 },
       advanced: { startMin: 60, startMax: 80, peakMin: 80, peakMax: 100, longRunPeakMin: 22, longRunPeakMax: 26 },
@@ -124,6 +136,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     pb: {
       beginner: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50, longRunPeakMin: 16, longRunPeakMax: 18 },
+      intermediate: { startMin: 35, startMax: 45, peakMin: 45, peakMax: 65, longRunPeakMin: 18, longRunPeakMax: 21 },
       lower_intermediate: { startMin: 35, startMax: 45, peakMin: 45, peakMax: 65, longRunPeakMin: 18, longRunPeakMax: 21 },
       upper_intermediate: { startMin: 45, startMax: 60, peakMin: 65, peakMax: 85, longRunPeakMin: 21, longRunPeakMax: 24 },
       advanced: { startMin: 60, startMax: 80, peakMin: 80, peakMax: 100, longRunPeakMin: 22, longRunPeakMax: 26 },
@@ -132,6 +145,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     race: {
       beginner: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50, longRunPeakMin: 16, longRunPeakMax: 18 },
+      intermediate: { startMin: 35, startMax: 45, peakMin: 45, peakMax: 65, longRunPeakMin: 18, longRunPeakMax: 21 },
       lower_intermediate: { startMin: 35, startMax: 45, peakMin: 45, peakMax: 65, longRunPeakMin: 18, longRunPeakMax: 21 },
       upper_intermediate: { startMin: 45, startMax: 60, peakMin: 65, peakMax: 85, longRunPeakMin: 21, longRunPeakMax: 24 },
       advanced: { startMin: 60, startMax: 80, peakMin: 80, peakMax: 100, longRunPeakMin: 22, longRunPeakMax: 26 },
@@ -140,6 +154,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     unsure: {
       beginner: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50, longRunPeakMin: 16, longRunPeakMax: 18 },
+      intermediate: { startMin: 35, startMax: 45, peakMin: 45, peakMax: 65, longRunPeakMin: 18, longRunPeakMax: 21 },
       lower_intermediate: { startMin: 35, startMax: 45, peakMin: 45, peakMax: 65, longRunPeakMin: 18, longRunPeakMax: 21 },
       upper_intermediate: { startMin: 45, startMax: 60, peakMin: 65, peakMax: 85, longRunPeakMin: 21, longRunPeakMax: 24 },
       advanced: { startMin: 60, startMax: 80, peakMin: 80, peakMax: 100, longRunPeakMin: 22, longRunPeakMax: 26 },
@@ -150,6 +165,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
   "marathon": {
     complete: {
       beginner: { startMin: 30, startMax: 45, peakMin: 45, peakMax: 60, longRunPeakMin: 28, longRunPeakMax: 32 },
+      intermediate: { startMin: 40, startMax: 55, peakMin: 60, peakMax: 80, longRunPeakMin: 30, longRunPeakMax: 34 },
       lower_intermediate: { startMin: 40, startMax: 55, peakMin: 60, peakMax: 80, longRunPeakMin: 30, longRunPeakMax: 34 },
       upper_intermediate: { startMin: 55, startMax: 70, peakMin: 80, peakMax: 105, longRunPeakMin: 32, longRunPeakMax: 36 },
       advanced: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130, longRunPeakMin: 34, longRunPeakMax: 38 },
@@ -158,6 +174,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     comfortable: {
       beginner: { startMin: 30, startMax: 45, peakMin: 45, peakMax: 60, longRunPeakMin: 28, longRunPeakMax: 32 },
+      intermediate: { startMin: 40, startMax: 55, peakMin: 60, peakMax: 80, longRunPeakMin: 30, longRunPeakMax: 34 },
       lower_intermediate: { startMin: 40, startMax: 55, peakMin: 60, peakMax: 80, longRunPeakMin: 30, longRunPeakMax: 34 },
       upper_intermediate: { startMin: 55, startMax: 70, peakMin: 80, peakMax: 105, longRunPeakMin: 32, longRunPeakMax: 36 },
       advanced: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130, longRunPeakMin: 34, longRunPeakMax: 38 },
@@ -166,6 +183,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     pb: {
       beginner: { startMin: 30, startMax: 45, peakMin: 45, peakMax: 60, longRunPeakMin: 28, longRunPeakMax: 32 },
+      intermediate: { startMin: 40, startMax: 55, peakMin: 60, peakMax: 80, longRunPeakMin: 30, longRunPeakMax: 34 },
       lower_intermediate: { startMin: 40, startMax: 55, peakMin: 60, peakMax: 80, longRunPeakMin: 30, longRunPeakMax: 34 },
       upper_intermediate: { startMin: 55, startMax: 70, peakMin: 80, peakMax: 105, longRunPeakMin: 32, longRunPeakMax: 36 },
       advanced: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130, longRunPeakMin: 34, longRunPeakMax: 38 },
@@ -174,6 +192,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     race: {
       beginner: { startMin: 30, startMax: 45, peakMin: 45, peakMax: 60, longRunPeakMin: 28, longRunPeakMax: 32 },
+      intermediate: { startMin: 40, startMax: 55, peakMin: 60, peakMax: 80, longRunPeakMin: 30, longRunPeakMax: 34 },
       lower_intermediate: { startMin: 40, startMax: 55, peakMin: 60, peakMax: 80, longRunPeakMin: 30, longRunPeakMax: 34 },
       upper_intermediate: { startMin: 55, startMax: 70, peakMin: 80, peakMax: 105, longRunPeakMin: 32, longRunPeakMax: 36 },
       advanced: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130, longRunPeakMin: 34, longRunPeakMax: 38 },
@@ -182,6 +201,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     unsure: {
       beginner: { startMin: 30, startMax: 45, peakMin: 45, peakMax: 60, longRunPeakMin: 28, longRunPeakMax: 32 },
+      intermediate: { startMin: 40, startMax: 55, peakMin: 60, peakMax: 80, longRunPeakMin: 30, longRunPeakMax: 34 },
       lower_intermediate: { startMin: 40, startMax: 55, peakMin: 60, peakMax: 80, longRunPeakMin: 30, longRunPeakMax: 34 },
       upper_intermediate: { startMin: 55, startMax: 70, peakMin: 80, peakMax: 105, longRunPeakMin: 32, longRunPeakMax: 36 },
       advanced: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130, longRunPeakMin: 34, longRunPeakMax: 38 },
@@ -192,6 +212,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
   "50k": {
     complete: {
       beginner: { startMin: 35, startMax: 45, peakMin: 55, peakMax: 70, longRunPeakMin: 24, longRunPeakMax: 32 },
+      intermediate: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90, longRunPeakMin: 28, longRunPeakMax: 36 },
       lower_intermediate: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90, longRunPeakMin: 28, longRunPeakMax: 36 },
       upper_intermediate: { startMin: 60, startMax: 75, peakMin: 85, peakMax: 110, longRunPeakMin: 32, longRunPeakMax: 40 },
       advanced: { startMin: 75, startMax: 95, peakMin: 100, peakMax: 130, longRunPeakMin: 36, longRunPeakMax: 44 },
@@ -200,6 +221,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     comfortable: {
       beginner: { startMin: 35, startMax: 45, peakMin: 55, peakMax: 70, longRunPeakMin: 24, longRunPeakMax: 32 },
+      intermediate: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90, longRunPeakMin: 28, longRunPeakMax: 36 },
       lower_intermediate: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90, longRunPeakMin: 28, longRunPeakMax: 36 },
       upper_intermediate: { startMin: 60, startMax: 75, peakMin: 85, peakMax: 110, longRunPeakMin: 32, longRunPeakMax: 40 },
       advanced: { startMin: 75, startMax: 95, peakMin: 100, peakMax: 130, longRunPeakMin: 36, longRunPeakMax: 44 },
@@ -208,6 +230,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     pb: {
       beginner: { startMin: 35, startMax: 45, peakMin: 55, peakMax: 70, longRunPeakMin: 24, longRunPeakMax: 32 },
+      intermediate: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90, longRunPeakMin: 28, longRunPeakMax: 36 },
       lower_intermediate: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90, longRunPeakMin: 28, longRunPeakMax: 36 },
       upper_intermediate: { startMin: 60, startMax: 75, peakMin: 85, peakMax: 110, longRunPeakMin: 32, longRunPeakMax: 40 },
       advanced: { startMin: 75, startMax: 95, peakMin: 100, peakMax: 130, longRunPeakMin: 36, longRunPeakMax: 44 },
@@ -216,6 +239,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     race: {
       beginner: { startMin: 35, startMax: 45, peakMin: 55, peakMax: 70, longRunPeakMin: 24, longRunPeakMax: 32 },
+      intermediate: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90, longRunPeakMin: 28, longRunPeakMax: 36 },
       lower_intermediate: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90, longRunPeakMin: 28, longRunPeakMax: 36 },
       upper_intermediate: { startMin: 60, startMax: 75, peakMin: 85, peakMax: 110, longRunPeakMin: 32, longRunPeakMax: 40 },
       advanced: { startMin: 75, startMax: 95, peakMin: 100, peakMax: 130, longRunPeakMin: 36, longRunPeakMax: 44 },
@@ -224,6 +248,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     unsure: {
       beginner: { startMin: 35, startMax: 45, peakMin: 55, peakMax: 70, longRunPeakMin: 24, longRunPeakMax: 32 },
+      intermediate: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90, longRunPeakMin: 28, longRunPeakMax: 36 },
       lower_intermediate: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90, longRunPeakMin: 28, longRunPeakMax: 36 },
       upper_intermediate: { startMin: 60, startMax: 75, peakMin: 85, peakMax: 110, longRunPeakMin: 32, longRunPeakMax: 40 },
       advanced: { startMin: 75, startMax: 95, peakMin: 100, peakMax: 130, longRunPeakMin: 36, longRunPeakMax: 44 },
@@ -234,6 +259,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
   "80k": {
     complete: {
       beginner: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90, longRunPeakMin: 32, longRunPeakMax: 40 },
+      intermediate: { startMin: 55, startMax: 70, peakMin: 85, peakMax: 110, longRunPeakMin: 36, longRunPeakMax: 45 },
       lower_intermediate: { startMin: 55, startMax: 70, peakMin: 85, peakMax: 110, longRunPeakMin: 36, longRunPeakMax: 45 },
       upper_intermediate: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130, longRunPeakMin: 40, longRunPeakMax: 52 },
       advanced: { startMin: 85, startMax: 110, peakMin: 120, peakMax: 150, longRunPeakMin: 45, longRunPeakMax: 55 },
@@ -242,6 +268,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     comfortable: {
       beginner: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90, longRunPeakMin: 32, longRunPeakMax: 40 },
+      intermediate: { startMin: 55, startMax: 70, peakMin: 85, peakMax: 110, longRunPeakMin: 36, longRunPeakMax: 45 },
       lower_intermediate: { startMin: 55, startMax: 70, peakMin: 85, peakMax: 110, longRunPeakMin: 36, longRunPeakMax: 45 },
       upper_intermediate: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130, longRunPeakMin: 40, longRunPeakMax: 52 },
       advanced: { startMin: 85, startMax: 110, peakMin: 120, peakMax: 150, longRunPeakMin: 45, longRunPeakMax: 55 },
@@ -250,6 +277,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     pb: {
       beginner: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90, longRunPeakMin: 32, longRunPeakMax: 40 },
+      intermediate: { startMin: 55, startMax: 70, peakMin: 85, peakMax: 110, longRunPeakMin: 36, longRunPeakMax: 45 },
       lower_intermediate: { startMin: 55, startMax: 70, peakMin: 85, peakMax: 110, longRunPeakMin: 36, longRunPeakMax: 45 },
       upper_intermediate: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130, longRunPeakMin: 40, longRunPeakMax: 52 },
       advanced: { startMin: 85, startMax: 110, peakMin: 120, peakMax: 150, longRunPeakMin: 45, longRunPeakMax: 55 },
@@ -258,6 +286,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     race: {
       beginner: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90, longRunPeakMin: 32, longRunPeakMax: 40 },
+      intermediate: { startMin: 55, startMax: 70, peakMin: 85, peakMax: 110, longRunPeakMin: 36, longRunPeakMax: 45 },
       lower_intermediate: { startMin: 55, startMax: 70, peakMin: 85, peakMax: 110, longRunPeakMin: 36, longRunPeakMax: 45 },
       upper_intermediate: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130, longRunPeakMin: 40, longRunPeakMax: 52 },
       advanced: { startMin: 85, startMax: 110, peakMin: 120, peakMax: 150, longRunPeakMin: 45, longRunPeakMax: 55 },
@@ -266,6 +295,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     unsure: {
       beginner: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90, longRunPeakMin: 32, longRunPeakMax: 40 },
+      intermediate: { startMin: 55, startMax: 70, peakMin: 85, peakMax: 110, longRunPeakMin: 36, longRunPeakMax: 45 },
       lower_intermediate: { startMin: 55, startMax: 70, peakMin: 85, peakMax: 110, longRunPeakMin: 36, longRunPeakMax: 45 },
       upper_intermediate: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130, longRunPeakMin: 40, longRunPeakMax: 52 },
       advanced: { startMin: 85, startMax: 110, peakMin: 120, peakMax: 150, longRunPeakMin: 45, longRunPeakMax: 55 },
@@ -276,6 +306,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
   "100k_plus": {
     complete: {
       beginner: { startMin: 50, startMax: 65, peakMin: 80, peakMax: 100, longRunPeakMin: 36, longRunPeakMax: 45 },
+      intermediate: { startMin: 60, startMax: 80, peakMin: 95, peakMax: 120, longRunPeakMin: 40, longRunPeakMax: 52 },
       lower_intermediate: { startMin: 60, startMax: 80, peakMin: 95, peakMax: 120, longRunPeakMin: 40, longRunPeakMax: 52 },
       upper_intermediate: { startMin: 75, startMax: 95, peakMin: 110, peakMax: 140, longRunPeakMin: 45, longRunPeakMax: 60 },
       advanced: { startMin: 90, startMax: 120, peakMin: 130, peakMax: 160, longRunPeakMin: 50, longRunPeakMax: 60 },
@@ -284,6 +315,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     comfortable: {
       beginner: { startMin: 50, startMax: 65, peakMin: 80, peakMax: 100, longRunPeakMin: 36, longRunPeakMax: 45 },
+      intermediate: { startMin: 60, startMax: 80, peakMin: 95, peakMax: 120, longRunPeakMin: 40, longRunPeakMax: 52 },
       lower_intermediate: { startMin: 60, startMax: 80, peakMin: 95, peakMax: 120, longRunPeakMin: 40, longRunPeakMax: 52 },
       upper_intermediate: { startMin: 75, startMax: 95, peakMin: 110, peakMax: 140, longRunPeakMin: 45, longRunPeakMax: 60 },
       advanced: { startMin: 90, startMax: 120, peakMin: 130, peakMax: 160, longRunPeakMin: 50, longRunPeakMax: 60 },
@@ -292,6 +324,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     pb: {
       beginner: { startMin: 50, startMax: 65, peakMin: 80, peakMax: 100, longRunPeakMin: 36, longRunPeakMax: 45 },
+      intermediate: { startMin: 60, startMax: 80, peakMin: 95, peakMax: 120, longRunPeakMin: 40, longRunPeakMax: 52 },
       lower_intermediate: { startMin: 60, startMax: 80, peakMin: 95, peakMax: 120, longRunPeakMin: 40, longRunPeakMax: 52 },
       upper_intermediate: { startMin: 75, startMax: 95, peakMin: 110, peakMax: 140, longRunPeakMin: 45, longRunPeakMax: 60 },
       advanced: { startMin: 90, startMax: 120, peakMin: 130, peakMax: 160, longRunPeakMin: 50, longRunPeakMax: 60 },
@@ -300,6 +333,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     race: {
       beginner: { startMin: 50, startMax: 65, peakMin: 80, peakMax: 100, longRunPeakMin: 36, longRunPeakMax: 45 },
+      intermediate: { startMin: 60, startMax: 80, peakMin: 95, peakMax: 120, longRunPeakMin: 40, longRunPeakMax: 52 },
       lower_intermediate: { startMin: 60, startMax: 80, peakMin: 95, peakMax: 120, longRunPeakMin: 40, longRunPeakMax: 52 },
       upper_intermediate: { startMin: 75, startMax: 95, peakMin: 110, peakMax: 140, longRunPeakMin: 45, longRunPeakMax: 60 },
       advanced: { startMin: 90, startMax: 120, peakMin: 130, peakMax: 160, longRunPeakMin: 50, longRunPeakMax: 60 },
@@ -308,6 +342,7 @@ const BASE_VOLUME_CONFIGS: Record<Distance, Record<GoalIntent, Record<AbilityTie
     },
     unsure: {
       beginner: { startMin: 50, startMax: 65, peakMin: 80, peakMax: 100, longRunPeakMin: 36, longRunPeakMax: 45 },
+      intermediate: { startMin: 60, startMax: 80, peakMin: 95, peakMax: 120, longRunPeakMin: 40, longRunPeakMax: 52 },
       lower_intermediate: { startMin: 60, startMax: 80, peakMin: 95, peakMax: 120, longRunPeakMin: 40, longRunPeakMax: 52 },
       upper_intermediate: { startMin: 75, startMax: 95, peakMin: 110, peakMax: 140, longRunPeakMin: 45, longRunPeakMax: 60 },
       advanced: { startMin: 90, startMax: 120, peakMin: 130, peakMax: 160, longRunPeakMin: 50, longRunPeakMax: 60 },

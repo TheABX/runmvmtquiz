@@ -36,6 +36,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     complete: {
       beginner: { startMin: 15, startMax: 25, peakMin: 25, peakMax: 35 },
       intermediate: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50 },
+      lower_intermediate: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50 },
+      upper_intermediate: { startMin: 35, startMax: 45, peakMin: 50, peakMax: 70 },
       advanced: { startMin: 35, startMax: 45, peakMin: 50, peakMax: 70 },
       competitive: { startMin: 45, startMax: 60, peakMin: 60, peakMax: 90 },
       elite: { startMin: 60, startMax: 90, peakMin: 80, peakMax: 120 },
@@ -43,6 +45,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     comfortable: {
       beginner: { startMin: 15, startMax: 25, peakMin: 25, peakMax: 35 },
       intermediate: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50 },
+      lower_intermediate: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50 },
+      upper_intermediate: { startMin: 35, startMax: 45, peakMin: 50, peakMax: 70 },
       advanced: { startMin: 35, startMax: 45, peakMin: 50, peakMax: 70 },
       competitive: { startMin: 45, startMax: 60, peakMin: 60, peakMax: 90 },
       elite: { startMin: 60, startMax: 90, peakMin: 80, peakMax: 120 },
@@ -50,6 +54,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     pb: {
       beginner: { startMin: 15, startMax: 25, peakMin: 25, peakMax: 35 },
       intermediate: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50 },
+      lower_intermediate: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50 },
+      upper_intermediate: { startMin: 35, startMax: 45, peakMin: 50, peakMax: 70 },
       advanced: { startMin: 35, startMax: 45, peakMin: 50, peakMax: 70 },
       competitive: { startMin: 45, startMax: 60, peakMin: 60, peakMax: 90 },
       elite: { startMin: 60, startMax: 90, peakMin: 80, peakMax: 120 },
@@ -57,6 +63,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     race: {
       beginner: { startMin: 15, startMax: 25, peakMin: 25, peakMax: 35 },
       intermediate: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50 },
+      lower_intermediate: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50 },
+      upper_intermediate: { startMin: 35, startMax: 45, peakMin: 50, peakMax: 70 },
       advanced: { startMin: 35, startMax: 45, peakMin: 50, peakMax: 70 },
       competitive: { startMin: 45, startMax: 60, peakMin: 60, peakMax: 90 },
       elite: { startMin: 60, startMax: 90, peakMin: 80, peakMax: 120 },
@@ -64,6 +72,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     unsure: {
       beginner: { startMin: 15, startMax: 25, peakMin: 25, peakMax: 35 },
       intermediate: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50 },
+      lower_intermediate: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50 },
+      upper_intermediate: { startMin: 35, startMax: 45, peakMin: 50, peakMax: 70 },
       advanced: { startMin: 35, startMax: 45, peakMin: 50, peakMax: 70 },
       competitive: { startMin: 45, startMax: 60, peakMin: 60, peakMax: 90 },
       elite: { startMin: 60, startMax: 90, peakMin: 80, peakMax: 120 },
@@ -73,6 +83,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     complete: {
       beginner: { startMin: 20, startMax: 30, peakMin: 30, peakMax: 40 },
       intermediate: { startMin: 30, startMax: 40, peakMin: 40, peakMax: 55 },
+      lower_intermediate: { startMin: 30, startMax: 40, peakMin: 40, peakMax: 55 },
+      upper_intermediate: { startMin: 40, startMax: 55, peakMin: 55, peakMax: 75 },
       advanced: { startMin: 40, startMax: 55, peakMin: 55, peakMax: 75 },
       competitive: { startMin: 55, startMax: 75, peakMin: 75, peakMax: 110 },
       elite: { startMin: 70, startMax: 100, peakMin: 100, peakMax: 140 },
@@ -80,6 +92,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     comfortable: {
       beginner: { startMin: 20, startMax: 30, peakMin: 30, peakMax: 40 },
       intermediate: { startMin: 30, startMax: 40, peakMin: 40, peakMax: 55 },
+      lower_intermediate: { startMin: 30, startMax: 40, peakMin: 40, peakMax: 55 },
+      upper_intermediate: { startMin: 40, startMax: 55, peakMin: 55, peakMax: 75 },
       advanced: { startMin: 40, startMax: 55, peakMin: 55, peakMax: 75 },
       competitive: { startMin: 55, startMax: 75, peakMin: 75, peakMax: 110 },
       elite: { startMin: 70, startMax: 100, peakMin: 100, peakMax: 140 },
@@ -87,6 +101,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     pb: {
       beginner: { startMin: 20, startMax: 30, peakMin: 30, peakMax: 40 },
       intermediate: { startMin: 30, startMax: 40, peakMin: 40, peakMax: 55 },
+      lower_intermediate: { startMin: 30, startMax: 40, peakMin: 40, peakMax: 55 },
+      upper_intermediate: { startMin: 40, startMax: 55, peakMin: 55, peakMax: 75 },
       advanced: { startMin: 40, startMax: 55, peakMin: 55, peakMax: 75 },
       competitive: { startMin: 55, startMax: 75, peakMin: 75, peakMax: 110 },
       elite: { startMin: 70, startMax: 100, peakMin: 100, peakMax: 140 },
@@ -94,6 +110,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     race: {
       beginner: { startMin: 20, startMax: 30, peakMin: 30, peakMax: 40 },
       intermediate: { startMin: 30, startMax: 40, peakMin: 40, peakMax: 55 },
+      lower_intermediate: { startMin: 30, startMax: 40, peakMin: 40, peakMax: 55 },
+      upper_intermediate: { startMin: 40, startMax: 55, peakMin: 55, peakMax: 75 },
       advanced: { startMin: 40, startMax: 55, peakMin: 55, peakMax: 75 },
       competitive: { startMin: 55, startMax: 75, peakMin: 75, peakMax: 110 },
       elite: { startMin: 70, startMax: 100, peakMin: 100, peakMax: 140 },
@@ -101,6 +119,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     unsure: {
       beginner: { startMin: 20, startMax: 30, peakMin: 30, peakMax: 40 },
       intermediate: { startMin: 30, startMax: 40, peakMin: 40, peakMax: 55 },
+      lower_intermediate: { startMin: 30, startMax: 40, peakMin: 40, peakMax: 55 },
+      upper_intermediate: { startMin: 40, startMax: 55, peakMin: 55, peakMax: 75 },
       advanced: { startMin: 40, startMax: 55, peakMin: 55, peakMax: 75 },
       competitive: { startMin: 55, startMax: 75, peakMin: 75, peakMax: 110 },
       elite: { startMin: 70, startMax: 100, peakMin: 100, peakMax: 140 },
@@ -110,6 +130,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     complete: {
       beginner: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50 },
       intermediate: { startMin: 35, startMax: 45, peakMin: 45, peakMax: 65 },
+      lower_intermediate: { startMin: 35, startMax: 45, peakMin: 45, peakMax: 65 },
+      upper_intermediate: { startMin: 45, startMax: 60, peakMin: 65, peakMax: 85 },
       advanced: { startMin: 45, startMax: 60, peakMin: 65, peakMax: 85 },
       competitive: { startMin: 60, startMax: 80, peakMin: 80, peakMax: 100 },
       elite: { startMin: 70, startMax: 100, peakMin: 100, peakMax: 140 },
@@ -117,6 +139,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     comfortable: {
       beginner: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50 },
       intermediate: { startMin: 35, startMax: 45, peakMin: 45, peakMax: 65 },
+      lower_intermediate: { startMin: 35, startMax: 45, peakMin: 45, peakMax: 65 },
+      upper_intermediate: { startMin: 45, startMax: 60, peakMin: 65, peakMax: 85 },
       advanced: { startMin: 45, startMax: 60, peakMin: 65, peakMax: 85 },
       competitive: { startMin: 60, startMax: 80, peakMin: 80, peakMax: 100 },
       elite: { startMin: 70, startMax: 100, peakMin: 100, peakMax: 140 },
@@ -124,6 +148,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     pb: {
       beginner: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50 },
       intermediate: { startMin: 35, startMax: 45, peakMin: 45, peakMax: 65 },
+      lower_intermediate: { startMin: 35, startMax: 45, peakMin: 45, peakMax: 65 },
+      upper_intermediate: { startMin: 45, startMax: 60, peakMin: 65, peakMax: 85 },
       advanced: { startMin: 45, startMax: 60, peakMin: 65, peakMax: 85 },
       competitive: { startMin: 60, startMax: 80, peakMin: 80, peakMax: 100 },
       elite: { startMin: 70, startMax: 100, peakMin: 100, peakMax: 140 },
@@ -131,6 +157,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     race: {
       beginner: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50 },
       intermediate: { startMin: 35, startMax: 45, peakMin: 45, peakMax: 65 },
+      lower_intermediate: { startMin: 35, startMax: 45, peakMin: 45, peakMax: 65 },
+      upper_intermediate: { startMin: 45, startMax: 60, peakMin: 65, peakMax: 85 },
       advanced: { startMin: 45, startMax: 60, peakMin: 65, peakMax: 85 },
       competitive: { startMin: 60, startMax: 80, peakMin: 80, peakMax: 100 },
       elite: { startMin: 70, startMax: 100, peakMin: 100, peakMax: 140 },
@@ -138,6 +166,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     unsure: {
       beginner: { startMin: 25, startMax: 35, peakMin: 35, peakMax: 50 },
       intermediate: { startMin: 35, startMax: 45, peakMin: 45, peakMax: 65 },
+      lower_intermediate: { startMin: 35, startMax: 45, peakMin: 45, peakMax: 65 },
+      upper_intermediate: { startMin: 45, startMax: 60, peakMin: 65, peakMax: 85 },
       advanced: { startMin: 45, startMax: 60, peakMin: 65, peakMax: 85 },
       competitive: { startMin: 60, startMax: 80, peakMin: 80, peakMax: 100 },
       elite: { startMin: 70, startMax: 100, peakMin: 100, peakMax: 140 },
@@ -147,6 +177,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     complete: {
       beginner: { startMin: 30, startMax: 45, peakMin: 45, peakMax: 60 },
       intermediate: { startMin: 40, startMax: 55, peakMin: 60, peakMax: 80 },
+      lower_intermediate: { startMin: 40, startMax: 55, peakMin: 60, peakMax: 80 },
+      upper_intermediate: { startMin: 55, startMax: 70, peakMin: 80, peakMax: 105 },
       advanced: { startMin: 55, startMax: 70, peakMin: 80, peakMax: 105 },
       competitive: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130 },
       elite: { startMin: 90, startMax: 120, peakMin: 120, peakMax: 150 },
@@ -154,6 +186,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     comfortable: {
       beginner: { startMin: 30, startMax: 45, peakMin: 45, peakMax: 60 },
       intermediate: { startMin: 40, startMax: 55, peakMin: 60, peakMax: 80 },
+      lower_intermediate: { startMin: 40, startMax: 55, peakMin: 60, peakMax: 80 },
+      upper_intermediate: { startMin: 55, startMax: 70, peakMin: 80, peakMax: 105 },
       advanced: { startMin: 55, startMax: 70, peakMin: 80, peakMax: 105 },
       competitive: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130 },
       elite: { startMin: 90, startMax: 120, peakMin: 120, peakMax: 150 },
@@ -161,6 +195,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     pb: {
       beginner: { startMin: 30, startMax: 45, peakMin: 45, peakMax: 60 },
       intermediate: { startMin: 40, startMax: 55, peakMin: 60, peakMax: 80 },
+      lower_intermediate: { startMin: 40, startMax: 55, peakMin: 60, peakMax: 80 },
+      upper_intermediate: { startMin: 55, startMax: 70, peakMin: 80, peakMax: 105 },
       advanced: { startMin: 55, startMax: 70, peakMin: 80, peakMax: 105 },
       competitive: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130 },
       elite: { startMin: 90, startMax: 120, peakMin: 120, peakMax: 150 },
@@ -168,6 +204,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     race: {
       beginner: { startMin: 30, startMax: 45, peakMin: 45, peakMax: 60 },
       intermediate: { startMin: 40, startMax: 55, peakMin: 60, peakMax: 80 },
+      lower_intermediate: { startMin: 40, startMax: 55, peakMin: 60, peakMax: 80 },
+      upper_intermediate: { startMin: 55, startMax: 70, peakMin: 80, peakMax: 105 },
       advanced: { startMin: 55, startMax: 70, peakMin: 80, peakMax: 105 },
       competitive: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130 },
       elite: { startMin: 90, startMax: 120, peakMin: 120, peakMax: 150 },
@@ -175,6 +213,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     unsure: {
       beginner: { startMin: 30, startMax: 45, peakMin: 45, peakMax: 60 },
       intermediate: { startMin: 40, startMax: 55, peakMin: 60, peakMax: 80 },
+      lower_intermediate: { startMin: 40, startMax: 55, peakMin: 60, peakMax: 80 },
+      upper_intermediate: { startMin: 55, startMax: 70, peakMin: 80, peakMax: 105 },
       advanced: { startMin: 55, startMax: 70, peakMin: 80, peakMax: 105 },
       competitive: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130 },
       elite: { startMin: 90, startMax: 120, peakMin: 120, peakMax: 150 },
@@ -184,6 +224,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     complete: {
       beginner: { startMin: 35, startMax: 45, peakMin: 55, peakMax: 70 },
       intermediate: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90 },
+      lower_intermediate: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90 },
+      upper_intermediate: { startMin: 60, startMax: 75, peakMin: 85, peakMax: 110 },
       advanced: { startMin: 60, startMax: 75, peakMin: 85, peakMax: 110 },
       competitive: { startMin: 60, startMax: 75, peakMin: 85, peakMax: 110 },
       elite: { startMin: 70, startMax: 90, peakMin: 110, peakMax: 140 },
@@ -191,6 +233,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     comfortable: {
       beginner: { startMin: 35, startMax: 45, peakMin: 55, peakMax: 70 },
       intermediate: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90 },
+      lower_intermediate: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90 },
+      upper_intermediate: { startMin: 60, startMax: 75, peakMin: 85, peakMax: 110 },
       advanced: { startMin: 60, startMax: 75, peakMin: 85, peakMax: 110 },
       competitive: { startMin: 60, startMax: 75, peakMin: 85, peakMax: 110 },
       elite: { startMin: 70, startMax: 90, peakMin: 110, peakMax: 140 },
@@ -198,6 +242,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     pb: {
       beginner: { startMin: 35, startMax: 45, peakMin: 55, peakMax: 70 },
       intermediate: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90 },
+      lower_intermediate: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90 },
+      upper_intermediate: { startMin: 60, startMax: 75, peakMin: 85, peakMax: 110 },
       advanced: { startMin: 60, startMax: 75, peakMin: 85, peakMax: 110 },
       competitive: { startMin: 60, startMax: 75, peakMin: 85, peakMax: 110 },
       elite: { startMin: 70, startMax: 90, peakMin: 110, peakMax: 140 },
@@ -205,6 +251,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     race: {
       beginner: { startMin: 35, startMax: 45, peakMin: 55, peakMax: 70 },
       intermediate: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90 },
+      lower_intermediate: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90 },
+      upper_intermediate: { startMin: 60, startMax: 75, peakMin: 85, peakMax: 110 },
       advanced: { startMin: 60, startMax: 75, peakMin: 85, peakMax: 110 },
       competitive: { startMin: 60, startMax: 75, peakMin: 85, peakMax: 110 },
       elite: { startMin: 70, startMax: 90, peakMin: 110, peakMax: 140 },
@@ -212,6 +260,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     unsure: {
       beginner: { startMin: 35, startMax: 45, peakMin: 55, peakMax: 70 },
       intermediate: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90 },
+      lower_intermediate: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90 },
+      upper_intermediate: { startMin: 60, startMax: 75, peakMin: 85, peakMax: 110 },
       advanced: { startMin: 60, startMax: 75, peakMin: 85, peakMax: 110 },
       competitive: { startMin: 60, startMax: 75, peakMin: 85, peakMax: 110 },
       elite: { startMin: 70, startMax: 90, peakMin: 110, peakMax: 140 },
@@ -221,6 +271,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     complete: {
       beginner: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90 },
       intermediate: { startMin: 55, startMax: 70, peakMin: 85, peakMax: 110 },
+      lower_intermediate: { startMin: 55, startMax: 70, peakMin: 85, peakMax: 110 },
+      upper_intermediate: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130 },
       advanced: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130 },
       competitive: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130 },
       elite: { startMin: 80, startMax: 100, peakMin: 120, peakMax: 150 },
@@ -228,6 +280,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     comfortable: {
       beginner: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90 },
       intermediate: { startMin: 55, startMax: 70, peakMin: 85, peakMax: 110 },
+      lower_intermediate: { startMin: 55, startMax: 70, peakMin: 85, peakMax: 110 },
+      upper_intermediate: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130 },
       advanced: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130 },
       competitive: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130 },
       elite: { startMin: 80, startMax: 100, peakMin: 120, peakMax: 150 },
@@ -235,6 +289,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     pb: {
       beginner: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90 },
       intermediate: { startMin: 55, startMax: 70, peakMin: 85, peakMax: 110 },
+      lower_intermediate: { startMin: 55, startMax: 70, peakMin: 85, peakMax: 110 },
+      upper_intermediate: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130 },
       advanced: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130 },
       competitive: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130 },
       elite: { startMin: 80, startMax: 100, peakMin: 120, peakMax: 150 },
@@ -242,6 +298,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     race: {
       beginner: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90 },
       intermediate: { startMin: 55, startMax: 70, peakMin: 85, peakMax: 110 },
+      lower_intermediate: { startMin: 55, startMax: 70, peakMin: 85, peakMax: 110 },
+      upper_intermediate: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130 },
       advanced: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130 },
       competitive: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130 },
       elite: { startMin: 80, startMax: 100, peakMin: 120, peakMax: 150 },
@@ -249,6 +307,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     unsure: {
       beginner: { startMin: 45, startMax: 60, peakMin: 70, peakMax: 90 },
       intermediate: { startMin: 55, startMax: 70, peakMin: 85, peakMax: 110 },
+      lower_intermediate: { startMin: 55, startMax: 70, peakMin: 85, peakMax: 110 },
+      upper_intermediate: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130 },
       advanced: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130 },
       competitive: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130 },
       elite: { startMin: 80, startMax: 100, peakMin: 120, peakMax: 150 },
@@ -258,6 +318,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     complete: {
       beginner: { startMin: 50, startMax: 65, peakMin: 80, peakMax: 100 },
       intermediate: { startMin: 60, startMax: 80, peakMin: 95, peakMax: 120 },
+      lower_intermediate: { startMin: 60, startMax: 80, peakMin: 95, peakMax: 120 },
+      upper_intermediate: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130 },
       advanced: { startMin: 75, startMax: 95, peakMin: 110, peakMax: 140 },
       competitive: { startMin: 75, startMax: 95, peakMin: 110, peakMax: 140 },
       elite: { startMin: 80, startMax: 110, peakMin: 130, peakMax: 160 },
@@ -265,6 +327,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     comfortable: {
       beginner: { startMin: 50, startMax: 65, peakMin: 80, peakMax: 100 },
       intermediate: { startMin: 60, startMax: 80, peakMin: 95, peakMax: 120 },
+      lower_intermediate: { startMin: 60, startMax: 80, peakMin: 95, peakMax: 120 },
+      upper_intermediate: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130 },
       advanced: { startMin: 75, startMax: 95, peakMin: 110, peakMax: 140 },
       competitive: { startMin: 75, startMax: 95, peakMin: 110, peakMax: 140 },
       elite: { startMin: 80, startMax: 110, peakMin: 130, peakMax: 160 },
@@ -272,6 +336,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     pb: {
       beginner: { startMin: 50, startMax: 65, peakMin: 80, peakMax: 100 },
       intermediate: { startMin: 60, startMax: 80, peakMin: 95, peakMax: 120 },
+      lower_intermediate: { startMin: 60, startMax: 80, peakMin: 95, peakMax: 120 },
+      upper_intermediate: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130 },
       advanced: { startMin: 75, startMax: 95, peakMin: 110, peakMax: 140 },
       competitive: { startMin: 75, startMax: 95, peakMin: 110, peakMax: 140 },
       elite: { startMin: 80, startMax: 110, peakMin: 130, peakMax: 160 },
@@ -279,6 +345,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     race: {
       beginner: { startMin: 50, startMax: 65, peakMin: 80, peakMax: 100 },
       intermediate: { startMin: 60, startMax: 80, peakMin: 95, peakMax: 120 },
+      lower_intermediate: { startMin: 60, startMax: 80, peakMin: 95, peakMax: 120 },
+      upper_intermediate: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130 },
       advanced: { startMin: 75, startMax: 95, peakMin: 110, peakMax: 140 },
       competitive: { startMin: 75, startMax: 95, peakMin: 110, peakMax: 140 },
       elite: { startMin: 80, startMax: 110, peakMin: 130, peakMax: 160 },
@@ -286,6 +354,8 @@ const TRAINING_VOLUME_BANDS: VolumeBandsConfig = {
     unsure: {
       beginner: { startMin: 50, startMax: 65, peakMin: 80, peakMax: 100 },
       intermediate: { startMin: 60, startMax: 80, peakMin: 95, peakMax: 120 },
+      lower_intermediate: { startMin: 60, startMax: 80, peakMin: 95, peakMax: 120 },
+      upper_intermediate: { startMin: 70, startMax: 90, peakMin: 100, peakMax: 130 },
       advanced: { startMin: 75, startMax: 95, peakMin: 110, peakMax: 140 },
       competitive: { startMin: 75, startMax: 95, peakMin: 110, peakMax: 140 },
       elite: { startMin: 80, startMax: 110, peakMin: 130, peakMax: 160 },
@@ -335,7 +405,7 @@ function chooseStartAndPeak(
   currentKmBucket: string
 ): { startKm: number; peakKm: number; abilityTier: AbilityTier } {
   const currentKmEstimate = estimateCurrentKmFromBucket(currentKmBucket);
-  const abilityTier = mapToAbilityTier(persona, currentKmEstimate);
+  const abilityTier = mapToAbilityTier({ current_weekly_km: currentKmBucket } as QuizAnswers, persona);
   const band = TRAINING_VOLUME_BANDS[distance][intent][abilityTier];
 
   // START KM RULES
@@ -450,6 +520,7 @@ function prescribeLongRunKm(
   const ranges: Record<Distance, Record<AbilityTier, [number, number]>> = {
     "5k": {
       beginner: [8, 10],
+      intermediate: [10, 12],
       lower_intermediate: [10, 12],
       upper_intermediate: [12, 14],
       advanced: [12, 16],
@@ -458,6 +529,7 @@ function prescribeLongRunKm(
     },
     "10k": {
       beginner: [12, 14],
+      intermediate: [14, 18],
       lower_intermediate: [14, 18],
       upper_intermediate: [16, 20],
       advanced: [16, 22],
@@ -466,6 +538,7 @@ function prescribeLongRunKm(
     },
     "half_marathon": {
       beginner: [16, 18],
+      intermediate: [18, 21],
       lower_intermediate: [18, 21],
       upper_intermediate: [20, 23],
       advanced: [21, 24],
@@ -474,6 +547,7 @@ function prescribeLongRunKm(
     },
     "marathon": {
       beginner: [28, 32],
+      intermediate: [30, 34],
       lower_intermediate: [30, 34],
       upper_intermediate: [32, 35],
       advanced: [32, 36],
@@ -482,6 +556,7 @@ function prescribeLongRunKm(
     },
     "50k": {
       beginner: [24, 32],
+      intermediate: [28, 36],
       lower_intermediate: [28, 36],
       upper_intermediate: [32, 38],
       advanced: [32, 40],
@@ -490,6 +565,7 @@ function prescribeLongRunKm(
     },
     "80k": {
       beginner: [32, 40],
+      intermediate: [36, 45],
       lower_intermediate: [36, 45],
       upper_intermediate: [40, 48],
       advanced: [40, 52],
@@ -498,6 +574,7 @@ function prescribeLongRunKm(
     },
     "100k_plus": {
       beginner: [36, 45],
+      intermediate: [40, 52],
       lower_intermediate: [40, 52],
       upper_intermediate: [45, 56],
       advanced: [45, 60],

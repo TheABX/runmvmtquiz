@@ -1,7 +1,7 @@
 import type { QuizAnswers } from '../runmvmtTypes';
 
 // Compatibility: Map old tier names to new ones
-export type AbilityTier = "beginner" | "lower_intermediate" | "upper_intermediate" | "advanced" | "competitive" | "elite";
+export type AbilityTier = "beginner" | "intermediate" | "lower_intermediate" | "upper_intermediate" | "advanced" | "competitive" | "elite";
 
 // Legacy compatibility - map old "intermediate" to new system
 export type LegacyAbilityTier = "beginner" | "intermediate" | "advanced" | "competitive" | "elite";
@@ -32,6 +32,15 @@ export const ABILITY_TIERS: Record<AbilityTier, AbilityTierConfig> = {
     maxQualitySessionsPerWeek: 1,
     typicalDaysPerWeek: [3, 4],
     description: "New to running or very low base. Focus on consistency and gradual progression."
+  },
+  intermediate: {
+    id: "intermediate",
+    label: "Intermediate",
+    weeklyKmRange: [25, 40],
+    longestRunRange: [10, 15],
+    maxQualitySessionsPerWeek: 1,
+    typicalDaysPerWeek: [3, 4, 5],
+    description: "Some running experience. Can handle regular training with gradual increases."
   },
   lower_intermediate: {
     id: "lower_intermediate",
